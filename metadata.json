@@ -1,0 +1,6 @@
+{
+  "name": "Biovia PLP to Python Refactoring Studio",
+  "description": "Enterprise workbench for parsing Biovia Pipeline Pilot protocols, transpiling PilotScript syntax, and generating clean, modular Python automation code for Biovia Notebook and Azure integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

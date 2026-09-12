@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataModelTransfer version="1.0">
+    <Metadata>
+        <InstrumentName>Rigaku Primus IV X-ray Fluorescence Spectrometer</InstrumentName>
+        <ModelRunID>MR-2026-XRF-8821</ModelRunID>
+        <ExportTimestamp>2026-09-12T00:15:00Z</ExportTimestamp>
+        <Operator>arun.khuntia</Operator>
+    </Metadata>
+    <generics>
+        <generic>
+            <XML_title>Spectroscopy: Quantitative Analysis Report</XML_title>
+            <ELN_value>\\rdplp-sbx1\shares\users\arun.khuntia\experiments\Quant_Analysis_Summary.pdf</ELN_value>
+        </generic>
+        <generic>
+            <XML_title>Calibration: Standards Curve and Linear Regression</XML_title>
+            <ELN_value>\\rdplp-sbx1\shares\users\arun.khuntia\experiments\Calibration_Curves.xlsx</ELN_value>
+        </generic>
+        <generic>
+            <XML_title>Review Presentation: Formulation Deck</XML_title>
+            <ELN_value>\\rdplp-sbx1\shares\users\arun.khuntia\experiments\Project_Milestone.pptx</ELN_value>
+        </generic>
+        <generic>
+            <XML_title>Study Protocol: Method Validation SOP</XML_title>
+            <ELN_value>\\rdplp-sbx1\shares\users\arun.khuntia\experiments\Method_Validation_SOP.docx</ELN_value>
+        </generic>
+        <generic>
+            <XML_title>Raw Spectral Data: Emission Readings</XML_title>
+            <ELN_value>\\rdplp-sbx1\shares\users\arun.khuntia\experiments\Raw_Spectral_Readings.dat</ELN_value>
+        </generic>
+    </generics>
+</DataModelTransfer>

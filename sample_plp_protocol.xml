@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:protocol xmlns:sci="http://www.scitegic.com" name="Data model UI" version="8.0.0">
+    <!-- Component 56: Delete File (Pre-cleanup staging) -->
+    <sci:component name="Delete File" version="2" localid="56">
+        <sci:arg name="Filename" type="StringType">
+            <sci:value>E:\Model Data Transfer\DownloadedFile</sci:value>
+        </sci:arg>
+        <sci:arg name="Recursive" type="BooleanType">
+            <sci:legalval selected="true">True</sci:legalval>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 59: Custom Filter (Gatekeeper 1: Prompt for XML) -->
+    <sci:component name="Custom Filter" version="2" localid="59">
+        <sci:arg name="Expression" type="ExpressionType">
+            <sci:value>@experiment_number is defined and @experiment_number is ne '' and @filelocation is eq ''</sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 44: Custom Filter (Gatekeeper 2: Check XML source) -->
+    <sci:component name="Custom Filter" version="2" localid="44">
+        <sci:arg name="Expression" type="ExpressionType">
+            <sci:value>@xml is defined and @xml ne '' and @filelist is eq ''</sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 22: Python (on Server) - Parse Model XML -->
+    <sci:component name="Python (on Server)" version="2" localid="22">
+        <sci:arg name="Script" type="PythonScriptType">
+            <sci:value>
+import xml.etree.ElementTree as ET
+mytree = ET.parse(xml_file_path)
+myroot = mytree.getroot()
+for x in myroot.findall('generic'):
+    title = x.find('XML_title').text
+    eln = x.find('ELN_value').text
+    # extract location users/...
+            </sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 28: Custom Manipulator (Clean Section Title) -->
+    <sci:component name="Custom Manipulator" version="2" localid="28">
+        <sci:arg name="Expression" type="ExpressionType">
+            <sci:value>@sectionName := Substring(SectionName, FindSubstring(SectionName, ':') + 2, StringLen(SectionName)); @location := location;</sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 47: Custom Filter (Gatekeeper 3: File list ready) -->
+    <sci:component name="Custom Filter" version="2" localid="47">
+        <sci:arg name="Expression" type="ExpressionType">
+            <sci:value>@filelist is defined and @filelist is ne ''</sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 54: Python (on Server) - Build Title Hash Table -->
+    <sci:component name="Python (on Server)" version="2" localid="54">
+        <sci:arg name="Script" type="PythonScriptType">
+            <sci:value>
+name_title = {}
+for item in file_items:
+    name_title[item['file_name']] = item['title']
+            </sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 46: Python (on Server) - Azure File Share Downloader -->
+    <sci:component name="Python (on Server)" version="2" localid="46">
+        <sci:arg name="Script" type="PythonScriptType">
+            <sci:value>
+from azure.storage.fileshare import ShareServiceClient
+service_client = ShareServiceClient(account_url=f"https://{account_name}.file.core.windows.net/", credential=account_key)
+share_client = service_client.get_share_client(share_name)
+dir_client = share_client.get_directory_client(directory_path)
+for file_name in selected_files:
+    file_client = dir_client.get_file_client(file_name)
+    with open(f"{download_folder}/{file_name}", "wb") as f:
+        f.write(file_client.download_file().readall())
+            </sci:value>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 51: Directory Watcher (Scan staging files) -->
+    <sci:component name="Directory Watcher" version="2" localid="51">
+        <sci:arg name="Directory" type="StringType">
+            <sci:value>E:\Model Data Transfer\DownloadedFile</sci:value>
+        </sci:arg>
+        <sci:arg name="SearchSubdirectories" type="BooleanType">
+            <sci:legalval selected="true">True</sci:legalval>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 53: Subprotocol (Section Dispatcher) -->
+    <sci:component name="Subprotocol" version="2" localid="53">
+        <sci:arg name="RunToCompletion" type="StringType">
+            <sci:legalval selected="true">True - For Each Data Record</sci:legalval>
+        </sci:arg>
+        <sci:subprotocol name="Section Router">
+            <!-- PDF Filter -->
+            <sci:component name="Custom Filter" version="2" localid="4">
+                <sci:arg name="Expression" type="ExpressionType">
+                    <sci:value>findsubstring(DocRelativepath, '.pdf')&gt;1</sci:value>
+                </sci:arg>
+            </sci:component>
+            <!-- Add PDF Section -->
+            <sci:component name="Add PDF Section" version="2" localid="1">
+                <sci:arg name="PreviewPageList" type="StringType">
+                    <sci:value>1-5</sci:value>
+                </sci:arg>
+            </sci:component>
+
+            <!-- Excel Filter -->
+            <sci:component name="Custom Filter" version="2" localid="6">
+                <sci:arg name="Expression" type="ExpressionType">
+                    <sci:value>findsubstring(DocRelativepath, '.xlsx')&gt;1</sci:value>
+                </sci:arg>
+            </sci:component>
+            <!-- Add Excel Section -->
+            <sci:component name="Add Excel Section" version="2" localid="9">
+                <sci:arg name="PreviewRows" type="IntegerType"><sci:value>3</sci:value></sci:arg>
+                <sci:arg name="PreviewCols" type="IntegerType"><sci:value>2</sci:value></sci:arg>
+            </sci:component>
+
+            <!-- PowerPoint Filter -->
+            <sci:component name="Custom Filter" version="2" localid="14">
+                <sci:arg name="Expression" type="ExpressionType">
+                    <sci:value>findsubstring(DocRelativepath, '.ppt')&gt;1</sci:value>
+                </sci:arg>
+            </sci:component>
+            <!-- Add PowerPoint Section -->
+            <sci:component name="Add PowerPoint Section" version="2" localid="15" />
+
+            <!-- Word Filter -->
+            <sci:component name="Custom Filter" version="2" localid="19">
+                <sci:arg name="Expression" type="ExpressionType">
+                    <sci:value>findsubstring(DocRelativepath, '.docx')&gt;1</sci:value>
+                </sci:arg>
+            </sci:component>
+            <!-- Add Word Section -->
+            <sci:component name="Add Word Section" version="2" localid="20" />
+
+            <!-- Fallback Attachment Section -->
+            <sci:component name="Add Attachment" version="2" localid="5" />
+        </sci:subprotocol>
+    </sci:component>
+
+    <!-- Component 24: Notebook Connection -->
+    <sci:component name="Notebook Connection" version="2" localid="24">
+        <sci:arg name="Connection Name" type="StringType">
+            <sci:value>NotebookConnection</sci:value>
+        </sci:arg>
+        <sci:arg name="Authentication Method" type="StringType">
+            <sci:legalval selected="true">Use Notebook Session Token</sci:legalval>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 3: Update Notebook -->
+    <sci:component name="Update Notebook" version="2" localid="3">
+        <sci:arg name="CommitTransaction" type="BooleanType">
+            <sci:legalval selected="true">True</sci:legalval>
+        </sci:arg>
+    </sci:component>
+
+    <!-- Component 55: Delete File (Post-cleanup) -->
+    <sci:component name="Delete File" version="2" localid="55">
+        <sci:arg name="Filename" type="StringType">
+            <sci:value>E:\Model Data Transfer\DownloadedFile</sci:value>
+        </sci:arg>
+    </sci:component>
+</sci:protocol>
