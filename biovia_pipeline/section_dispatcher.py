@@ -1,9 +1,10 @@
 """
 Section Dispatcher replacing PLP Subprotocol 'Section Router' (LocalID 53).
 Routes downloaded files to appropriate Biovia Notebook section creators based on extension.
+Reuses the unified 'custom_filter' component.
 """
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional, Union
 from .custom_filter import custom_filter
 from .biovia_notebook import BioviaNotebookClient
 
@@ -15,48 +16,63 @@ class SectionDispatcher:
     """
 
     @staticmethod
-    def dispatch_file(
-        file_path: Path,
-        section_title: Optional[str],
-        experiment_id: str,
-        client: BioviaNotebookClient
-    ) -> Dict[str, str]:
-        title = section_title or file_path.stem
-        record = {"DocRelativepath": str(file_path.name)}
-
-        # Component 4: Custom Filter (PLP Script: findsubstring(DocRelativepath, '.pdf')>1)
+    def classify_file(file_name: str) -> Dict[str, Any]:
+        """
+        Classifies a file based on PLP Custom Filter expressions without requiring an active ELN client.
+        """
+        record = {"DocRelativepath": file_name}
         if custom_filter("findsubstring(DocRelativepath, '.pdf')>1", record=record):
-            # PLP Component 1: Add PDF Section
-            sec_type = "pdf"
-            sec_id = client.add_pdf_section(experiment_id, title, file_path)
-
-        # Component 6: Custom Filter (PLP Script: findsubstring(DocRelativepath, '.xlsx')>1)
+            return {"file_name": file_name, "section_type": "pdf", "component_id": 48}
         elif custom_filter("findsubstring(DocRelativepath, '.xlsx')>1", record=record) or custom_filter("findsubstring(DocRelativepath, '.xls')>1", record=record):
-            # PLP Component 9: Add Excel Section
-            sec_type = "excel"
-            sec_id = client.add_excel_section(experiment_id, title, file_path)
-
-        # Component 14: Custom Filter (PLP Script: findsubstring(DocRelativepath, '.ppt')>1)
+            return {"file_name": file_name, "section_type": "excel", "component_id": 51}
         elif custom_filter("findsubstring(DocRelativepath, '.ppt')>1", record=record):
-            # PLP Component 15: Add PowerPoint Section
-            sec_type = "powerpoint"
-            sec_id = client.add_powerpoint_section(experiment_id, title, file_path)
-
-        # Component 19: Custom Filter (PLP Script: findsubstring(DocRelativepath, '.docx')>1)
+            return {"file_name": file_name, "section_type": "powerpoint", "component_id": 49}
         elif custom_filter("findsubstring(DocRelativepath, '.docx')>1", record=record) or custom_filter("findsubstring(DocRelativepath, '.doc')>1", record=record):
-            # PLP Component 20: Add Word Section
-            sec_type = "word"
-            sec_id = client.add_word_section(experiment_id, title, file_path)
-
+            return {"file_name": file_name, "section_type": "word", "component_id": 50}
         else:
-            # PLP Component 5: Add Attachment (Fallback for all non-matched file types)
-            sec_type = "attachment"
-            sec_id = client.add_attachment_section(experiment_id, title, file_path)
+            return {"file_name": file_name, "section_type": "attachment", "component_id": 52}
+
+    @classmethod
+    def dispatch_file(
+        cls,
+        file_path: Union[Path, str, Dict[str, Any]],
+        section_title: Optional[str] = None,
+        experiment_id: str = "EXP-DEFAULT-01",
+        client: Optional[BioviaNotebookClient] = None
+    ) -> Dict[str, Any]:
+        """
+        Dispatches a file to the appropriate ELN section creator using PLP Custom Filter rules.
+        """
+        # Support dict format e.g. {"file_name": "x.pdf", "section_title": "..."}
+        if isinstance(file_path, dict):
+            fn = file_path.get("file_name") or file_path.get("DocRelativepath") or "file.dat"
+            title = section_title or file_path.get("section_title") or Path(fn).stem
+            p_obj = Path(fn)
+        else:
+            p_obj = Path(file_path)
+            title = section_title or p_obj.stem
+
+        eln_client = client or BioviaNotebookClient(mock_mode=True)
+        classification = cls.classify_file(p_obj.name)
+        sec_type = classification["section_type"]
+        comp_id = classification["component_id"]
+
+        if sec_type == "pdf":
+            sec_id = eln_client.add_pdf_section(experiment_id, title, p_obj)
+        elif sec_type == "excel":
+            sec_id = eln_client.add_excel_section(experiment_id, title, p_obj)
+        elif sec_type == "powerpoint":
+            sec_id = eln_client.add_powerpoint_section(experiment_id, title, p_obj)
+        elif sec_type == "word":
+            sec_id = eln_client.add_word_section(experiment_id, title, p_obj)
+        else:
+            sec_id = eln_client.add_attachment_section(experiment_id, title, p_obj)
 
         return {
-            "fileName": file_path.name,
+            "fileName": p_obj.name,
+            "section_type": sec_type,
             "sectionType": sec_type,
             "sectionTitle": title,
-            "sectionId": sec_id
+            "sectionId": sec_id,
+            "component_id": comp_id
         }
-

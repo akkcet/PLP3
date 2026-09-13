@@ -6,6 +6,7 @@ import { PilotScriptRepl } from "./components/PilotScriptRepl";
 import { WorkflowSimulator } from "./components/WorkflowSimulator";
 import { XmlInspector } from "./components/XmlInspector";
 import { PythonRuntimePanel } from "./components/PythonRuntimePanel";
+import { ComponentWorkbench } from "./components/ComponentWorkbench";
 import { AiAssistant } from "./components/AiAssistant";
 import { ThreatModelModal } from "./components/ThreatModelModal";
 
@@ -55,6 +56,7 @@ export default function App() {
             onNavigateToCode={handleNavigateToCode}
           />
         )}
+        {activeTab === "workbench" && <ComponentWorkbench />}
         {activeTab === "python" && <PythonRuntimePanel />}
         {activeTab === "codebase" && <CodeViewer initialFile={codeFile} />}
         {activeTab === "transpiler" && <PilotScriptRepl initialScript={replScript} />}

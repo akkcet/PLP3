@@ -217,6 +217,87 @@ app.post("/api/python/custom-filter", async (req, res) => {
   });
 });
 
+// 3c. Run Python Custom Manipulator component CLI
+app.post("/api/python/custom-manipulator", async (req, res) => {
+  const expr = req.body?.expression || "A := 10; B := A * 2; CleanTitle := 'Clean_' . SectionTitle;";
+  const record = JSON.stringify(req.body?.record || { SectionTitle: "Spectroscopy Analysis" });
+  const globalsDict = JSON.stringify(req.body?.globals || {});
+  const localsDict = JSON.stringify(req.body?.locals || {});
+  const initExpr = req.body?.init || "";
+  const finalExpr = req.body?.final || "";
+
+  const args = [
+    "-m", "biovia_pipeline.cli", "custom-manipulator", expr,
+    "--record", record,
+    "--globals", globalsDict,
+    "--locals", localsDict,
+  ];
+  if (initExpr) args.push("--init", initExpr);
+  if (finalExpr) args.push("--final", finalExpr);
+
+  const result = await runPython(args);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3d. Run Python Notebook Connection component CLI
+app.post("/api/python/notebook-connection", async (req, res) => {
+  const name = req.body?.name || "NotebookConnection";
+  const url = req.body?.url || "https://notebook.corp.internal/eln";
+  const auth = req.body?.auth || "Use Notebook Session Token";
+  const user = req.body?.user || "arun.khuntia";
+  const token = req.body?.token || "tok_eln_mock_session_abc";
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "notebook-connection",
+    "--name", name,
+    "--url", url,
+    "--auth", auth,
+    "--user", user,
+    "--token", token,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3e. Run Python Experiment Query component CLI
+app.post("/api/python/experiment-query", async (req, res) => {
+  const connection = req.body?.connection || "NotebookConnection";
+  const filterBy = req.body?.filterBy || "Experiment Number";
+  const filterType = req.body?.filterType || "Equals";
+  const filterVal = req.body?.filterVal || "EXP-2026-XRF-01";
+  const max = String(req.body?.max || 10);
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "experiment-query",
+    "--connection", connection,
+    "--filter-by", filterBy,
+    "--filter-type", filterType,
+    "--filter-val", filterVal,
+    "--max", max,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3f. Run isolated component tests
+app.post("/api/python/run-component-test", async (req, res) => {
+  const testTarget = req.body?.target || "tests.test_components";
+  const result = await runPython(["-m", "unittest", testTarget, "-v"]);
+  res.json({
+    success: result.exitCode === 0,
+    stdout: result.stdout,
+    stderr: result.stderr,
+    combinedOutput: (result.stdout + "\n" + result.stderr).trim(),
+  });
+});
+
 // 4. Run Python Model Data XML Parser CLI
 app.post("/api/python/parse-model", async (req, res) => {
   const xmlPath = req.body?.xmlPath || "sample_model_data.xml";

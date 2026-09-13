@@ -135,5 +135,22 @@ To verify the refactored automation pipeline without requiring live Azure or Bio
 - **Expected Outcome**: Calls `add_pdf_section`, `add_excel_section`, `add_powerpoint_section`, `add_word_section`, and `add_attachment_section` respectively.
 
 ### Test Case 4: Full Pipeline Dry-Run Simulation
-- **Trigger**: Run `python -m biovia_pipeline.cli --xml ./sample.xml --experiment EXP-2026-XRF --mock`.
+- **Trigger**: Run `python3 -m biovia_pipeline.cli run-pipeline --xml sample_model_data.xml --exp EXP-2026-XRF-01 --mock`.
 - **Expected Outcome**: Exit code 0, 5 sections created and formatted in JSON summary, execution time < 5 seconds.
+
+### Test Case 5: Custom Manipulator Independent Execution
+- **Trigger**: Run `python3 -m biovia_pipeline.cli custom-manipulator "A := 10; B := A * 2; CleanTitle := 'Clean_' . SectionTitle;" --record '{"SectionTitle": "Spectroscopy"}'`.
+- **Expected Outcome**: Returns manipulated record with `A: 10`, `B: 20`, and `CleanTitle: "Clean_Spectroscopy"`.
+
+### Test Case 6: Notebook Connection Independent Configuration
+- **Trigger**: Run `python3 -m biovia_pipeline.cli notebook-connection --name ProdELN --token tok_abc123`.
+- **Expected Outcome**: Returns connection hash dictionary, API endpoint `https://notebook.corp.internal/eln/api/v1`, and encoded PLP hash string.
+
+### Test Case 7: Experiment Query Independent Execution
+- **Trigger**: Run `python3 -m biovia_pipeline.cli experiment-query --connection ProdELN --filter-val EXP-2026-XRF-01`.
+- **Expected Outcome**: Returns experiment record with decoded signing status `Signed by witness`, submission status `Fully Submitted`, and 4 simple sections.
+
+### Test Case 8: Full Component Isolation Test Suite
+- **Trigger**: Run `python3 -m unittest discover tests -v` or `python3 -m biovia_pipeline.cli test-components`.
+- **Expected Outcome**: 34 unit tests pass with OK status (0 failures, 0 errors).
+

@@ -9,10 +9,12 @@ import {
   Sparkles,
   Layers,
   Cpu,
+  Boxes,
 } from "lucide-react";
 
 export type ActiveTab =
   | "canvas"
+  | "workbench"
   | "codebase"
   | "python"
   | "transpiler"
@@ -36,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navItems: { id: ActiveTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: "canvas", label: "Protocol DAG Canvas", icon: GitFork },
+    { id: "workbench", label: "Component Workbench", icon: Boxes },
     { id: "python", label: "Python CLI & Runtime", icon: Cpu },
     { id: "codebase", label: "Modular Python Code", icon: Code2 },
     { id: "transpiler", label: "PilotScript Transpiler", icon: Terminal },
