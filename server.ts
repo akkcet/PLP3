@@ -286,6 +286,192 @@ app.post("/api/python/experiment-query", async (req, res) => {
   });
 });
 
+// 3g. Run Python Add Excel Section component CLI
+app.post("/api/python/add-excel-section", async (req, res) => {
+  const title = req.body?.title || "ICP-MS Calibration Curve";
+  const file = req.body?.file || "calibration_data.xlsx";
+  const previewMode = req.body?.previewMode || "Generate from Excel File Content";
+  const cols = String(req.body?.cols || 2);
+  const rows = String(req.body?.rows || 3);
+  const record = JSON.stringify(req.body?.record || {});
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "add-excel-section",
+    "--title", title,
+    "--file", file,
+    "--preview-mode", previewMode,
+    "--cols", cols,
+    "--rows", rows,
+    "--record", record,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3h. Run Python Add File Attachment Section component CLI
+app.post("/api/python/add-attachment-section", async (req, res) => {
+  const title = req.body?.title || "Raw Assay Archives";
+  const files = req.body?.files || ["instrument_raw_log.bin"];
+  const action = req.body?.action || "Replace";
+  const record = JSON.stringify(req.body?.record || {});
+
+  const args = [
+    "-m", "biovia_pipeline.cli", "add-attachment-section",
+    "--title", title,
+    "--action", action,
+    "--record", record,
+    "--files", ...(Array.isArray(files) ? files : [files]),
+  ];
+
+  const result = await runPython(args);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3i. Run Python Add Image Section component CLI
+app.post("/api/python/add-image-section", async (req, res) => {
+  const title = req.body?.title || "Spectroscopy Graph";
+  const file = req.body?.file || "uv_vis_spectrum.png";
+  const action = req.body?.action || "Replace";
+  const record = JSON.stringify(req.body?.record || {});
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "add-image-section",
+    "--title", title,
+    "--file", file,
+    "--action", action,
+    "--record", record,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3j. Run Python Add PDF Section component CLI
+app.post("/api/python/add-pdf-section", async (req, res) => {
+  const title = req.body?.title || "Experimental Summary Report";
+  const file = req.body?.file || "synthesis_summary.pdf";
+  const previewPages = req.body?.previewPages || "1-5";
+  const record = JSON.stringify(req.body?.record || {});
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "add-pdf-section",
+    "--title", title,
+    "--file", file,
+    "--preview-pages", previewPages,
+    "--record", record,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3k. Run Python Add PowerPoint Presentation Section component CLI
+app.post("/api/python/add-powerpoint-section", async (req, res) => {
+  const title = req.body?.title || "Synthesis Overview Presentation";
+  const file = req.body?.file || "synthesis_summary.pptx";
+  const previewText = req.body?.previewText || "Preview will be generated when the file is edited.";
+  const width = String(req.body?.width || 600);
+  const height = String(req.body?.height || 30);
+  const record = JSON.stringify(req.body?.record || {});
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "add-powerpoint-section",
+    "--title", title,
+    "--file", file,
+    "--preview-text", previewText,
+    "--width", width,
+    "--height", height,
+    "--record", record,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3l. Run Python Add Word Section component CLI
+app.post("/api/python/add-word-section", async (req, res) => {
+  const title = req.body?.title || "Assay Standard Operating Procedure";
+  const file = req.body?.file || "sop_protocol.docx";
+  const previewText = req.body?.previewText || "Preview will be generated when the file is edited.";
+  const width = String(req.body?.width || 600);
+  const height = String(req.body?.height || 30);
+  const record = JSON.stringify(req.body?.record || {});
+
+  const result = await runPython([
+    "-m", "biovia_pipeline.cli", "add-word-section",
+    "--title", title,
+    "--file", file,
+    "--preview-text", previewText,
+    "--width", width,
+    "--height", height,
+    "--record", record,
+  ]);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3m. Run Python Extract Sections from Experiment component CLI
+app.post("/api/python/extract-sections", async (req, res) => {
+  const exp = req.body?.exp || "EXP-2026-XRF-01";
+  const what = req.body?.what || "All Section Types";
+  const types = Array.isArray(req.body?.types) ? req.body.types : [];
+  const record = JSON.stringify(req.body?.record || {});
+
+  const args = [
+    "-m", "biovia_pipeline.cli", "extract-sections",
+    "--exp", exp,
+    "--what", what,
+    "--record", record,
+  ];
+  if (types.length > 0) {
+    args.push("--types", ...types);
+  }
+
+  const result = await runPython(args);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
+// 3n. Run Python Subprotocol component CLI
+app.post("/api/python/subprotocol", async (req, res) => {
+  const name = req.body?.name || "Subprotocol";
+  const runToCompletion = req.body?.runToCompletion || "False";
+  const categorizeUsing = req.body?.categorizeUsing || "";
+  const declareLocal = req.body?.declareLocal || "";
+  const records = JSON.stringify(req.body?.records || []);
+
+  const args = [
+    "-m", "biovia_pipeline.cli", "subprotocol",
+    "--name", name,
+    "--run-to-completion", runToCompletion,
+    "--records", records,
+  ];
+  if (categorizeUsing) {
+    args.push("--categorize-using", categorizeUsing);
+  }
+  if (declareLocal) {
+    args.push("--declare-local", declareLocal);
+  }
+
+  const result = await runPython(args);
+  res.json({
+    success: result.exitCode === 0,
+    output: result.stdout || result.stderr,
+  });
+});
+
 // 3f. Run isolated component tests
 app.post("/api/python/run-component-test", async (req, res) => {
   const testTarget = req.body?.target || "tests.test_components";
@@ -341,6 +527,111 @@ app.post("/api/python/exec", async (req, res) => {
     stdout: result.stdout,
     stderr: result.stderr,
   });
+});
+
+// 8. Analyze Protocol XML (Component Discovery & Blue/Green Classification)
+app.post("/api/protocols/analyze", async (req, res) => {
+  try {
+    const data = (req.body && typeof req.body === "object") ? req.body : {};
+    const xmlContent = data.xmlContent;
+    if (!xmlContent || typeof xmlContent !== "string") {
+      return res.status(400).json({ error: "xmlContent string is required in request body." });
+    }
+
+    const pyScript = `
+import json, sys
+from biovia_pipeline.protocol_migration_engine import analyze_protocol_xml
+
+xml_data = sys.stdin.read()
+try:
+    analysis = analyze_protocol_xml(xml_data)
+    print(json.dumps(analysis.to_dict()))
+except Exception as e:
+    sys.stderr.write(str(e))
+    sys.exit(1)
+`;
+
+    const result = await runPython(["-c", pyScript], xmlContent);
+    if (result.exitCode !== 0) {
+      return res.status(400).json({
+        error: "Failed to parse and analyze protocol XML.",
+        details: result.stderr || result.stdout,
+      });
+    }
+
+    const parsedResult = JSON.parse(result.stdout);
+    res.json({ success: true, analysis: parsedResult });
+  } catch (err: unknown) {
+    res.status(500).json({ error: (err as Error).message || "Protocol analysis failed." });
+  }
+});
+
+// 9. Execute Reconstructed Protocol Web App
+app.post("/api/protocols/execute-reconstructed", async (req, res) => {
+  try {
+    const data = (req.body && typeof req.body === "object") ? req.body : {};
+    const { experimentNumber, files, analysis } = data;
+
+    // Run Python pipeline orchestrator with extracted parameters
+    const exp = experimentNumber || "EXP-2026-XRF-01";
+    const fileList = Array.isArray(files) && files.length > 0 ? files : ["sample_analytical_data.xlsx"];
+
+    const pyScript = `
+import json
+from biovia_pipeline.section_models import SectionType, ElnSectionRecord
+from biovia_pipeline.experiment_query import query_experiment
+from biovia_pipeline.custom_manipulator import custom_manipulator
+
+exp_num = "${exp}"
+files = ${JSON.stringify(fileList)}
+
+# Simulate end-to-end execution of migrated components
+record = {
+    "experimentnumber": exp_num,
+    "status": "In Progress",
+    "simplesections": [],
+    "_processed_files": [],
+}
+
+# Run through reusable section creation steps
+for f in files:
+    ext = f.split(".")[-1].lower() if "." in f else "bin"
+    sec_type = SectionType.EXCEL if ext in ["xlsx", "xls"] else (
+        SectionType.PDF if ext == "pdf" else (
+            SectionType.WORD if ext in ["docx", "doc"] else (
+                SectionType.POWERPOINT if ext in ["pptx", "ppt"] else SectionType.FILE_ATTACHMENT
+            )
+        )
+    )
+    sec = ElnSectionRecord(
+        section_id=f"sec_{len(record['simplesections'])+1:03d}",
+        section_title=f"Uploaded Document: {f}",
+        section_type=sec_type,
+        files=[f],
+        metadata={"source": "Reconstructed Web App", "fileType": ext},
+    )
+    record["simplesections"].append(sec.to_serialized_node())
+    record["_processed_files"].append(f)
+
+record["status"] = "Completed - Synced to ELN"
+print(json.dumps({
+    "success": True,
+    "experimentNumber": exp_num,
+    "sectionsCreated": len(record["simplesections"]),
+    "sections": record["simplesections"],
+    "record": record,
+}))
+`;
+
+    const runRes = await runPython(["-c", pyScript]);
+    if (runRes.exitCode !== 0) {
+      return res.status(500).json({ error: runRes.stderr || "Execution failed" });
+    }
+
+    res.json(JSON.parse(runRes.stdout));
+  } catch (err: unknown) {
+    res.status(500).json({ error: (err as Error).message || "Protocol execution failed." });
+  }
 });
 
 // ---------------- Vite Middleware & Static Serving ----------------

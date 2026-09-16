@@ -9,6 +9,7 @@ import { PythonRuntimePanel } from "./components/PythonRuntimePanel";
 import { ComponentWorkbench } from "./components/ComponentWorkbench";
 import { AiAssistant } from "./components/AiAssistant";
 import { ThreatModelModal } from "./components/ThreatModelModal";
+import { ProtocolMigrationStudio } from "./components/ProtocolMigrationStudio";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("canvas");
@@ -55,6 +56,11 @@ export default function App() {
             onSelectComponentForRepl={handleSelectComponentForRepl}
             onNavigateToCode={handleNavigateToCode}
           />
+        )}
+        {activeTab === "migration" && (
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 max-w-7xl w-full mx-auto">
+            <ProtocolMigrationStudio />
+          </div>
         )}
         {activeTab === "workbench" && <ComponentWorkbench />}
         {activeTab === "python" && <PythonRuntimePanel />}

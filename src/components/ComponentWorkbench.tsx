@@ -321,6 +321,380 @@ export const REUSABLE_COMPONENTS: ComponentDefinition[] = [
     ],
     unitTestClass: "tests.test_components.TestSectionDispatcherIsolated",
   },
+  {
+    id: "add_excel_section",
+    name: "Add Excel Section",
+    module: "biovia_pipeline.add_excel_section",
+    functionName: "add_excel_section",
+    plpLocalIds: ["5", "2", "13", "11", "12"],
+    category: "eln_integration",
+    shortDescription: "Creates and formats an Excel Worksheet section with table preview configuration",
+    fullDoc: "Replaces PLP 'Add Excel Section' subprotocol (GUID: {3136A684-DFA5-448D-A426-731FB1723119}). Staged locally in experiment record with preview rows/cols (<8 limit) and serialized node structure.",
+    pythonSignature: "add_excel_section(section_title: str, excel_file: Union[str, Path], preview_mode: str = 'Generate from Excel File Content', columns_to_preview: int = 2, rows_to_preview: int = 3, ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_excel_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-excel-section --title \"ICP-MS Calibration\" --file \"calibration.xlsx\" --cols 4 --rows 5",
+    defaultInput: {
+      title: "ICP-MS Calibration Curve",
+      file: "calibration_data.xlsx",
+      previewMode: "Generate from Excel File Content",
+      cols: 4,
+      rows: 5,
+    },
+    testPresets: [
+      {
+        label: "Standard 2x3 Preview",
+        description: "Preview 2 columns and 3 rows",
+        payload: {
+          title: "Standard Curve",
+          file: "curve.xlsx",
+          previewMode: "Generate from Excel File Content",
+          cols: 2,
+          rows: 3,
+        },
+      },
+      {
+        label: "Expanded 4x6 Preview",
+        description: "Preview 4 columns and 6 rows",
+        payload: {
+          title: "Raw Assay Run",
+          file: "assay_run_99.xlsx",
+          previewMode: "Generate from Excel File Content",
+          cols: 4,
+          rows: 6,
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddExcelSectionIsolated",
+  },
+  {
+    id: "add_file_attachment_section",
+    name: "Add File Attachment Section",
+    module: "biovia_pipeline.add_file_attachment_section",
+    functionName: "add_file_attachment_section",
+    plpLocalIds: ["6", "2", "9", "12", "13"],
+    category: "eln_integration",
+    shortDescription: "Attaches single or batch files to an experiment with Replace or Append semantics",
+    fullDoc: "Replaces PLP 'Add File Attachment Section' subprotocol (GUID: {26E8ED5E-1528-4272-B425-EAE5BD96C635}). Supports multi-file lists and Replace/Append modes.",
+    pythonSignature: "add_file_attachment_section(section_title: str, files_to_attach: Union[str, Path, List], action: str = 'Replace', ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_file_attachment_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-attachment-section --title \"Raw Archives\" --files sensor1.bin sensor2.bin --action Replace",
+    defaultInput: {
+      title: "Raw Instrument Archive",
+      files: "spectrometer_raw_data.bin, calibration_metadata.json",
+      action: "Replace",
+    },
+    testPresets: [
+      {
+        label: "Replace Single Archive",
+        description: "Attach spectrometer_raw_data.bin with Replace mode",
+        payload: {
+          title: "Sensor Dump",
+          files: "spectrometer_raw_data.bin",
+          action: "Replace",
+        },
+      },
+      {
+        label: "Append Multi-File Batch",
+        description: "Attach multiple files with Append mode",
+        payload: {
+          title: "Multi-Channel Logs",
+          files: "ch1_detector.bin, ch2_detector.bin, run_log.txt",
+          action: "Append",
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddFileAttachmentSectionIsolated",
+  },
+  {
+    id: "add_image_section",
+    name: "Add Image Section",
+    module: "biovia_pipeline.add_image_section",
+    functionName: "add_image_section",
+    plpLocalIds: ["7", "2", "10", "13", "14"],
+    category: "eln_integration",
+    shortDescription: "Adds image sections (PNG, JPG, BMP, TIFF, SVG) to experiments with Replace or Append",
+    fullDoc: "Replaces PLP 'Add Image Section' subprotocol (GUID: {F4D376EB-B83C-449E-840C-E2EC31218298}). Configures local image record and node serialization.",
+    pythonSignature: "add_image_section(section_title: str, image_file: Union[str, Path], action: str = 'Replace', ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_image_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-image-section --title \"Microscopy\" --file \"crystal_40x.png\" --action Replace",
+    defaultInput: {
+      title: "Crystal Morphology",
+      file: "microscope_sample_40x.png",
+      action: "Replace",
+    },
+    testPresets: [
+      {
+        label: "High-Res PNG Morphology",
+        description: "Replace image section with microscope PNG",
+        payload: {
+          title: "Optical Microscopy",
+          file: "microscope_sample_40x.png",
+          action: "Replace",
+        },
+      },
+      {
+        label: "SEM Snapshot (Append)",
+        description: "Append SEM scan image",
+        payload: {
+          title: "SEM Surface Scan",
+          file: "sem_nanoparticles.jpg",
+          action: "Append",
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddImageSectionIsolated",
+  },
+  {
+    id: "add_pdf_section",
+    name: "Add PDF Section",
+    module: "biovia_pipeline.add_pdf_section",
+    functionName: "add_pdf_section",
+    plpLocalIds: ["8", "2", "11", "14", "15"],
+    category: "eln_integration",
+    shortDescription: "Adds PDF Document sections with configurable thumbnail preview page ranges",
+    fullDoc: "Replaces PLP 'Add PDF Section' subprotocol (GUID: {94F2211E-FD84-4A26-BB7F-58560EDFA824}). Staged in experiment record with preview page ranges (e.g. 1-5).",
+    pythonSignature: "add_pdf_section(section_title: str, pdf_file: Union[str, Path], preview_page_list: str = '1-5', ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_pdf_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-pdf-section --title \"Assay Report\" --file \"summary.pdf\" --preview-pages \"1-5\"",
+    defaultInput: {
+      title: "Final Analytical Report",
+      file: "assay_summary_q3.pdf",
+      previewPages: "1-5",
+    },
+    testPresets: [
+      {
+        label: "Standard 5-Page Preview",
+        description: "Preview pages 1 through 5",
+        payload: {
+          title: "Analytical Report",
+          file: "assay_summary_q3.pdf",
+          previewPages: "1-5",
+        },
+      },
+      {
+        label: "First Page Only",
+        description: "Preview page 1 only",
+        payload: {
+          title: "Executive Summary",
+          file: "exec_summary.pdf",
+          previewPages: "1",
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddPdfSectionIsolated",
+  },
+  {
+    id: "add_powerpoint_section",
+    name: "Add PowerPoint Presentation Section",
+    module: "biovia_pipeline.add_powerpoint_section",
+    functionName: "add_powerpoint_section",
+    plpLocalIds: ["9", "2", "18", "16", "17"],
+    category: "eln_integration",
+    shortDescription: "Creates PowerPoint Presentation section with canvas message preview",
+    fullDoc: "Replaces PLP 'Add PowerPoint Presentation Section' subprotocol (GUID: {E5B6E23D-CC7F-4D04-878E-606E3B4B6E7E}). Formats 600x30 canvas placeholder preview and appends serialized node to experiment record.",
+    pythonSignature: "add_powerpoint_section(section_title: str, powerpoint_file: Union[str, Path], preview_text: str = 'Preview will be generated when the file is edited.', ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_powerpoint_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-powerpoint-section --title \"Synthesis Deck\" --file \"synthesis_overview.pptx\"",
+    defaultInput: {
+      title: "Synthesis Overview Deck",
+      file: "synthesis_overview.pptx",
+      previewText: "Preview will be generated when the file is edited.",
+      width: 600,
+      height: 30,
+    },
+    testPresets: [
+      {
+        label: "Standard Slide Deck",
+        description: "Attach synthesis presentation with 600x30 message preview",
+        payload: {
+          title: "Executive Synthesis Overview",
+          file: "synthesis_summary.pptx",
+          previewText: "Preview will be generated when the file is edited.",
+          width: 600,
+          height: 30,
+        },
+      },
+      {
+        label: "Quarterly Review Deck",
+        description: "Attach Q3 review slides",
+        payload: {
+          title: "Q3 Assay Review",
+          file: "q3_assay_review.ppt",
+          previewText: "Preview will be generated when the file is edited.",
+          width: 800,
+          height: 40,
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddPowerPointSectionIsolated",
+  },
+  {
+    id: "add_word_section",
+    name: "Add Word Section",
+    module: "biovia_pipeline.add_word_section",
+    functionName: "add_word_section",
+    plpLocalIds: ["11", "2", "13", "16", "17"],
+    category: "eln_integration",
+    shortDescription: "Creates Word Document section with message preview instructing users to open in Notebook",
+    fullDoc: "Replaces PLP 'Add Word Section' subprotocol (GUID: {AED5E9B3-0FD3-497E-B0DB-CA8DC212E03F}). Staged in experiment record with serialized XML nodes.",
+    pythonSignature: "add_word_section(section_title: str, word_file: Union[str, Path], preview_text: str = 'Preview will be generated when the file is edited.', ...) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import add_word_section",
+    cliCommand: "python3 -m biovia_pipeline.cli add-word-section --title \"Assay SOP\" --file \"sop_protocol.docx\"",
+    defaultInput: {
+      title: "Assay Standard Operating Procedure",
+      file: "assay_protocol_v2.docx",
+      previewText: "Preview will be generated when the file is edited.",
+      width: 600,
+      height: 30,
+    },
+    testPresets: [
+      {
+        label: "Assay Standard Protocol",
+        description: "Attach SOP docx with 600x30 message preview",
+        payload: {
+          title: "ICP-MS Analytical Method SOP",
+          file: "icp_ms_sop_v4.docx",
+          previewText: "Preview will be generated when the file is edited.",
+          width: 600,
+          height: 30,
+        },
+      },
+      {
+        label: "Legacy .DOC Specification",
+        description: "Attach legacy method document",
+        payload: {
+          title: "Legacy Prep Method",
+          file: "sample_prep_1998.doc",
+          previewText: "Preview will be generated when the file is edited.",
+          width: 600,
+          height: 30,
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestAddWordSectionIsolated",
+  },
+  {
+    id: "extract_sections",
+    name: "Extract Sections from Experiment",
+    module: "biovia_pipeline.extract_sections",
+    functionName: "extract_sections",
+    plpLocalIds: ["4", "26", "44", "28", "35", "56"],
+    category: "eln_integration",
+    shortDescription: "Extracts, filters, deduplicates, and sorts sections from an experiment record",
+    fullDoc: "Replaces PLP 'Extract Sections from Experiment' subprotocol (GUID: {9371960B-8C09-4303-93A8-B74422F2B964}). Validates experimentnumber, builds OData section filter, deduplicates via First Occurrence Filter on id, and sorts by indexindocument.",
+    pythonSignature: "extract_sections(experiment_record: Optional[Dict] = None, experiment_id: Optional[str] = None, what_to_extract: str = 'All Section Types', section_types: Optional[List[str]] = None, ...) -> List[Dict[str, Any]]",
+    importStatement: "from biovia_pipeline import extract_sections",
+    cliCommand: "python3 -m biovia_pipeline.cli extract-sections --exp \"EXP-2026-XRF-01\" --what \"All Section Types\"",
+    defaultInput: {
+      exp: "EXP-2026-XRF-01",
+      what: "All Section Types",
+      types: "Excel Worksheet, PDF Document",
+    },
+    testPresets: [
+      {
+        label: "Extract All Section Types",
+        description: "Extract all experiment sections sorted by document index with duplicate removal",
+        payload: {
+          exp: "EXP-2026-XRF-01",
+          what: "All Section Types",
+          types: "",
+        },
+      },
+      {
+        label: "Extract Excel & PDF Only",
+        description: "Filter only Excel Worksheet and PDF Document section types",
+        payload: {
+          exp: "EXP-2026-XRF-01",
+          what: "Selected Section Types",
+          types: "Excel Worksheet, PDF Document",
+        },
+      },
+    ],
+    unitTestClass: "tests.test_section_components.TestExtractSectionsIsolated",
+  },
+  {
+    id: "subprotocol",
+    name: "Subprotocol",
+    module: "biovia_pipeline.subprotocol",
+    functionName: "Subprotocol / run_subprotocol",
+    plpLocalIds: ["Subprotocol Container", "RunToCompletion", "DeclareLocal", "Composite Sub-Graph"],
+    category: "data_flow",
+    shortDescription: "Composite container collapsing multiple components into a single clean block with parameter promotion",
+    fullDoc: "In Biovia Pipeline Pilot, a 'Protocol' is the macro application, while a 'Subprotocol' (GUID: {17001C74-63CE-4B4B-B37C-F0EAA19CE4AA}) is a composite container that encapsulates a sub-graph of interconnected components. It declutters the schematic canvas, exposes promoted parameters (LinkSingleParentParameterType), and manages execution semantics ('False' streaming, 'True - For Each Data Record', 'True - For Each Category') and local scope ('DeclareLocal').",
+    pythonSignature: "run_subprotocol(name: str = 'Subprotocol', run_to_completion: str = 'False', categorize_using: Optional[str] = None, declare_local: Optional[str] = None, records: Optional[List[Dict]] = None) -> Dict[str, Any]",
+    importStatement: "from biovia_pipeline import Subprotocol, SubprotocolNode, create_add_powerpoint_subprotocol",
+    cliCommand: "python3 -m biovia_pipeline.cli subprotocol --name \"MySubprotocol\" --run-to-completion \"False\"",
+    defaultInput: {
+      name: "ExperimentSectionDispatcherSubP",
+      runToCompletion: "False",
+      categorizeUsing: "",
+      declareLocal: "top:=5, currentIteration:=0",
+      records: JSON.stringify([
+        { id: 101, experimentNumber: "EXP-2026-XRF-01", fileType: "Excel", score: 95 },
+        { id: 102, experimentNumber: "EXP-2026-XRF-01", fileType: "PDF", score: 88 },
+        { id: 103, experimentNumber: "EXP-2026-XRF-01", fileType: "Word", score: 42 }
+      ], null, 2),
+    },
+    testPresets: [
+      {
+        label: "Subprotocol Topology Inspection",
+        description: "Inspect the inner collapsed components, wiring connections, and parameter promotions",
+        payload: {
+          name: "AddPowerPointPresentationSubP",
+          runToCompletion: "False",
+          categorizeUsing: "",
+          declareLocal: "previewWidth:=600, previewHeight:=30",
+          records: JSON.stringify([
+            { experimentNumber: "EXP-2026-XRF-01", file: "presentation.pptx", title: "Synthesis Deck" }
+          ], null, 2),
+        },
+      },
+      {
+        label: "Sequential Streaming Mode",
+        description: "Stream records one-by-one through collapsed child pipeline with DeclareLocal context",
+        payload: {
+          name: "SequentialSubP",
+          runToCompletion: "False",
+          categorizeUsing: "",
+          declareLocal: "top:=10, skip:=0, recordCount:=0",
+          records: JSON.stringify([
+            { id: 1, sample: "Assay-A", value: 12.4 },
+            { id: 2, sample: "Assay-B", value: 45.1 }
+          ], null, 2),
+        },
+      },
+      {
+        label: "Run To Completion: Per Category",
+        description: "Partition records into categories and execute pipeline per category batch",
+        payload: {
+          name: "CategoryBatchSubP",
+          runToCompletion: "True - For Each Category",
+          categorizeUsing: "fileType",
+          declareLocal: "batchIdx:=0",
+          records: JSON.stringify([
+            { id: 1, fileType: "Excel", file: "data1.xlsx" },
+            { id: 2, fileType: "Excel", file: "data2.xlsx" },
+            { id: 3, fileType: "PDF", file: "report.pdf" }
+          ], null, 2),
+        },
+      },
+      {
+        label: "Run To Completion: Per Record",
+        description: "Re-initialize execution state and context completely per data record",
+        payload: {
+          name: "PerRecordSubP",
+          runToCompletion: "True - For Each Data Record",
+          categorizeUsing: "",
+          declareLocal: "isolatedState:=true",
+          records: JSON.stringify([
+            { id: 1, experimentNumber: "EXP-01" },
+            { id: 2, experimentNumber: "EXP-02" }
+          ], null, 2),
+        },
+      },
+    ],
+    unitTestClass: "tests.test_subprotocol.TestSubprotocolIsolated",
+  },
 ];
 
 export const ComponentWorkbench: React.FC = () => {
@@ -421,6 +795,82 @@ print(f"File Name:      {res['file_name']}")
 print(f"Section Type:   {res['section_type'].upper()}")
 print(f"PLP Component:  LocalID {res['component_id']}")
 `,
+        };
+      } else if (currentComp.id === "add_excel_section") {
+        endpoint = "/api/python/add-excel-section";
+        bodyData = {
+          title: formData.title || "ICP-MS Calibration Curve",
+          file: formData.file || "calibration_data.xlsx",
+          previewMode: formData.previewMode || "Generate from Excel File Content",
+          cols: formData.cols || 2,
+          rows: formData.rows || 3,
+        };
+      } else if (currentComp.id === "add_file_attachment_section") {
+        endpoint = "/api/python/add-attachment-section";
+        const fileList = typeof formData.files === "string"
+          ? formData.files.split(",").map((s: string) => s.trim()).filter(Boolean)
+          : formData.files || ["raw_data.bin"];
+        bodyData = {
+          title: formData.title || "Raw Archive",
+          files: fileList,
+          action: formData.action || "Replace",
+        };
+      } else if (currentComp.id === "add_image_section") {
+        endpoint = "/api/python/add-image-section";
+        bodyData = {
+          title: formData.title || "Crystal Morphology",
+          file: formData.file || "microscope_sample_40x.png",
+          action: formData.action || "Replace",
+        };
+      } else if (currentComp.id === "add_pdf_section") {
+        endpoint = "/api/python/add-pdf-section";
+        bodyData = {
+          title: formData.title || "Analytical Report",
+          file: formData.file || "assay_summary.pdf",
+          previewPages: formData.previewPages || "1-5",
+        };
+      } else if (currentComp.id === "add_powerpoint_section") {
+        endpoint = "/api/python/add-powerpoint-section";
+        bodyData = {
+          title: formData.title || "Synthesis Overview Presentation",
+          file: formData.file || "synthesis_summary.pptx",
+          previewText: formData.previewText || "Preview will be generated when the file is edited.",
+          width: Number(formData.width) || 600,
+          height: Number(formData.height) || 30,
+        };
+      } else if (currentComp.id === "add_word_section") {
+        endpoint = "/api/python/add-word-section";
+        bodyData = {
+          title: formData.title || "Assay Standard Operating Procedure",
+          file: formData.file || "sop_protocol.docx",
+          previewText: formData.previewText || "Preview will be generated when the file is edited.",
+          width: Number(formData.width) || 600,
+          height: Number(formData.height) || 30,
+        };
+      } else if (currentComp.id === "extract_sections") {
+        endpoint = "/api/python/extract-sections";
+        const typeList = typeof formData.types === "string"
+          ? formData.types.split(",").map((s: string) => s.trim()).filter(Boolean)
+          : [];
+        bodyData = {
+          exp: formData.exp || "EXP-2026-XRF-01",
+          what: formData.what || "All Section Types",
+          types: typeList,
+        };
+      } else if (currentComp.id === "subprotocol") {
+        endpoint = "/api/python/subprotocol";
+        let parsedRecords = [];
+        try {
+          parsedRecords = typeof formData.records === "string" ? JSON.parse(formData.records) : formData.records;
+        } catch {
+          parsedRecords = [];
+        }
+        bodyData = {
+          name: formData.name || "Subprotocol",
+          runToCompletion: formData.runToCompletion || "False",
+          categorizeUsing: formData.categorizeUsing || "",
+          declareLocal: formData.declareLocal || "",
+          records: parsedRecords,
         };
       }
 
@@ -866,6 +1316,428 @@ print(f"PLP Component:  LocalID {res['component_id']}")
                       className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
                     />
                   </div>
+                )}
+
+                {currentComp.id === "add_excel_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Excel File:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.file || ""}
+                        onChange={(e) => setFormData({ ...formData, file: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Preview Mode:
+                      </label>
+                      <select
+                        value={formData.previewMode || "Generate from Excel File Content"}
+                        onChange={(e) => setFormData({ ...formData, previewMode: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      >
+                        <option value="Generate from Excel File Content">Generate from Excel File Content</option>
+                        <option value="Disabled">Disabled</option>
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Cols to Preview (Max &lt; 8):
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={7}
+                          value={formData.cols || 2}
+                          onChange={(e) => setFormData({ ...formData, cols: parseInt(e.target.value) || 2 })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Rows to Preview:
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={formData.rows || 3}
+                          onChange={(e) => setFormData({ ...formData, rows: parseInt(e.target.value) || 3 })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "add_file_attachment_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Files to Attach (comma-separated):
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.files || ""}
+                        onChange={(e) => setFormData({ ...formData, files: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        placeholder="file1.bin, file2.csv, log.txt"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Action:
+                      </label>
+                      <select
+                        value={formData.action || "Replace"}
+                        onChange={(e) => setFormData({ ...formData, action: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      >
+                        <option value="Replace">Replace</option>
+                        <option value="Append">Append</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "add_image_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Image File:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.file || ""}
+                        onChange={(e) => setFormData({ ...formData, file: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Action:
+                      </label>
+                      <select
+                        value={formData.action || "Replace"}
+                        onChange={(e) => setFormData({ ...formData, action: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      >
+                        <option value="Replace">Replace</option>
+                        <option value="Append">Append</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "add_pdf_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        PDF File:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.file || ""}
+                        onChange={(e) => setFormData({ ...formData, file: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Preview Page Range:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.previewPages || "1-5"}
+                        onChange={(e) => setFormData({ ...formData, previewPages: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        placeholder="1-5 or 1"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "add_powerpoint_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        PowerPoint File:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.file || ""}
+                        onChange={(e) => setFormData({ ...formData, file: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Canvas Preview Text:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.previewText || ""}
+                        onChange={(e) => setFormData({ ...formData, previewText: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Width (px):
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.width || 600}
+                          onChange={(e) => setFormData({ ...formData, width: Number(e.target.value) })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Height (px):
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.height || 30}
+                          onChange={(e) => setFormData({ ...formData, height: Number(e.target.value) })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "add_word_section" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Section Title:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Word File:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.file || ""}
+                        onChange={(e) => setFormData({ ...formData, file: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Canvas Preview Text:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.previewText || ""}
+                        onChange={(e) => setFormData({ ...formData, previewText: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Width (px):
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.width || 600}
+                          onChange={(e) => setFormData({ ...formData, width: Number(e.target.value) })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Height (px):
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.height || 30}
+                          onChange={(e) => setFormData({ ...formData, height: Number(e.target.value) })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {currentComp.id === "extract_sections" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Experiment ID / Number:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.exp || "EXP-2026-XRF-01"}
+                        onChange={(e) => setFormData({ ...formData, exp: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        What To Extract:
+                      </label>
+                      <select
+                        value={formData.what || "All Section Types"}
+                        onChange={(e) => setFormData({ ...formData, what: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      >
+                        <option value="All Section Types">All Section Types</option>
+                        <option value="Selected Section Types">Selected Section Types</option>
+                      </select>
+                    </div>
+                    {formData.what === "Selected Section Types" && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Section Types (comma separated):
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.types || ""}
+                          onChange={(e) => setFormData({ ...formData, types: e.target.value })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                          placeholder="Excel Worksheet, PDF Document, Image"
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {currentComp.id === "subprotocol" && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Subprotocol Name:
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name || "Subprotocol"}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        RunToCompletion:
+                      </label>
+                      <select
+                        value={formData.runToCompletion || "False"}
+                        onChange={(e) => setFormData({ ...formData, runToCompletion: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      >
+                        <option value="False">False (Streaming)</option>
+                        <option value="True - For Each Data Record">True - For Each Data Record</option>
+                        <option value="True - For Each Category">True - For Each Category</option>
+                      </select>
+                    </div>
+                    {formData.runToCompletion === "True - For Each Category" && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          RunToCompletion Categorize Using:
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.categorizeUsing || ""}
+                          onChange={(e) => setFormData({ ...formData, categorizeUsing: e.target.value })}
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                          placeholder="fileType or sectionType"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        DeclareLocal (PilotScript scope initialization):
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.declareLocal || ""}
+                        onChange={(e) => setFormData({ ...formData, declareLocal: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        placeholder='counter:=0, stepTitle:="Init"'
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Incoming Records (JSON Array):
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.records || "[]"}
+                        onChange={(e) => setFormData({ ...formData, records: e.target.value })}
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 p-2.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
 

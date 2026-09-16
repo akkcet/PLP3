@@ -23,6 +23,14 @@ from .notebook_connection import notebook_connection
 from .experiment_query import experiment_query
 from .xml_model_parser import parse_model_xml
 from .pipeline_orchestrator import ElnDataTransferPipeline
+from .add_excel_section import add_excel_section
+from .add_file_attachment_section import add_file_attachment_section
+from .add_image_section import add_image_section
+from .add_pdf_section import add_pdf_section
+from .add_powerpoint_section import add_powerpoint_section
+from .add_word_section import add_word_section
+from .extract_sections import extract_sections
+from .subprotocol import run_subprotocol
 
 
 def main():
@@ -80,7 +88,76 @@ def main():
     p_run.add_argument("--exp", required=True, type=str, help="Experiment number (e.g. EXP-2026-XRF-01)")
     p_run.add_argument("--mock", action="store_true", default=True, help="Run in mock/dry-run mode")
 
-    # Command 9: test-components
+    # Command 9: add-excel-section
+    p_add_excel = subparsers.add_parser("add-excel-section", help="Execute Add Excel Section component")
+    p_add_excel.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_excel.add_argument("--file", required=True, type=str, help="Excel spreadsheet file path")
+    p_add_excel.add_argument("--preview-mode", type=str, default="Generate from Excel File Content", help="Preview mode")
+    p_add_excel.add_argument("--cols", type=int, default=2, help="Columns to preview (< 8)")
+    p_add_excel.add_argument("--rows", type=int, default=3, help="Rows to preview")
+    p_add_excel.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 10: add-attachment-section
+    p_add_att = subparsers.add_parser("add-attachment-section", help="Execute Add File Attachment Section component")
+    p_add_att.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_att.add_argument("--files", required=True, nargs="+", help="Files to attach")
+    p_add_att.add_argument("--action", type=str, default="Replace", choices=["Replace", "Append"], help="Replace or Append")
+    p_add_att.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 11: add-image-section
+    p_add_img = subparsers.add_parser("add-image-section", help="Execute Add Image Section component")
+    p_add_img.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_img.add_argument("--file", required=True, type=str, help="Image file path")
+    p_add_img.add_argument("--action", type=str, default="Replace", choices=["Replace", "Append"], help="Replace or Append")
+    p_add_img.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 12: add-pdf-section
+    p_add_pdf = subparsers.add_parser("add-pdf-section", help="Execute Add PDF Section component")
+    p_add_pdf.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_pdf.add_argument("--file", required=True, type=str, help="PDF file path")
+    p_add_pdf.add_argument("--preview-pages", type=str, default="1-5", help="Preview page range (e.g. '1-5')")
+    p_add_pdf.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 13: add-powerpoint-section
+    p_add_ppt = subparsers.add_parser("add-powerpoint-section", help="Execute Add PowerPoint Presentation Section component")
+    p_add_ppt.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_ppt.add_argument("--file", required=True, type=str, help="PowerPoint file path")
+    p_add_ppt.add_argument("--preview-text", type=str, default="Preview will be generated when the file is edited.", help="Canvas preview text")
+    p_add_ppt.add_argument("--width", type=int, default=600, help="Preview image width")
+    p_add_ppt.add_argument("--height", type=int, default=30, help="Preview image height")
+    p_add_ppt.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 14: add-word-section
+    p_add_word = subparsers.add_parser("add-word-section", help="Execute Add Word Section component")
+    p_add_word.add_argument("--title", required=True, type=str, help="Section Title")
+    p_add_word.add_argument("--file", required=True, type=str, help="Word file path")
+    p_add_word.add_argument("--preview-text", type=str, default="Preview will be generated when the file is edited.", help="Canvas preview text")
+    p_add_word.add_argument("--width", type=int, default=600, help="Preview image width")
+    p_add_word.add_argument("--height", type=int, default=30, help="Preview image height")
+    p_add_word.add_argument("--record", type=str, default="{}", help="Existing experiment record JSON")
+
+    # Command 15: extract-sections
+    p_extract = subparsers.add_parser("extract-sections", help="Execute Extract Sections from Experiment component")
+    p_extract.add_argument("--exp", required=True, type=str, help="Experiment number or ID")
+    p_extract.add_argument("--what", type=str, default="All Section Types", choices=["All Section Types", "Selected Section Types"], help="Extraction filter mode")
+    p_extract.add_argument("--types", nargs="*", default=[], help="Selected section types to filter")
+    p_extract.add_argument("--record", type=str, default="{}", help="Incoming experiment record JSON")
+
+    # Command 16: subprotocol
+    p_subp = subparsers.add_parser("subprotocol", help="Execute Subprotocol execution container component")
+    p_subp.add_argument("--name", type=str, default="Subprotocol", help="Subprotocol name")
+    p_subp.add_argument(
+        "--run-to-completion",
+        type=str,
+        default="False",
+        choices=["False", "True - For Each Data Record", "True - For Each Category"],
+        help="RunToCompletion execution mode",
+    )
+    p_subp.add_argument("--categorize-using", type=str, default="", help="Property to categorize by when RunToCompletion is True - For Each Category")
+    p_subp.add_argument("--declare-local", type=str, default="", help="PilotScript DeclareLocal string")
+    p_subp.add_argument("--records", type=str, default="[]", help="JSON array of incoming records")
+
+    # Command 17: test-components
     subparsers.add_parser("test-components", help="Run full independent component unit test suite")
 
     args = parser.parse_args()
@@ -220,6 +297,162 @@ def main():
         print("\nCreated Sections in Biovia Notebook:")
         for s in res.sections_created:
             print(f"  * [{s['sectionType'].upper()}] {s['sectionTitle']} (ID: {s['sectionId']}) <- {s['fileName']}")
+
+    elif args.command == "add-excel-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_excel_section(
+            section_title=args.title,
+            excel_file=args.file,
+            preview_mode=args.preview_mode,
+            columns_to_preview=args.cols,
+            rows_to_preview=args.rows,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add Excel Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"Excel File:         {args.file}")
+        print(f"Preview Columns:    {args.cols} (Rows: {args.rows})")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "add-attachment-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_file_attachment_section(
+            section_title=args.title,
+            files_to_attach=args.files,
+            action=args.action,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add File Attachment Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"Files Attached:     {args.files}")
+        print(f"Action:             {args.action}")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "add-image-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_image_section(
+            section_title=args.title,
+            image_file=args.file,
+            action=args.action,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add Image Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"Image File:         {args.file}")
+        print(f"Action:             {args.action}")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "add-pdf-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_pdf_section(
+            section_title=args.title,
+            pdf_file=args.file,
+            preview_page_list=args.preview_pages,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add PDF Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"PDF File:           {args.file}")
+        print(f"Preview Pages:      {args.preview_pages}")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "add-powerpoint-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_powerpoint_section(
+            section_title=args.title,
+            powerpoint_file=args.file,
+            preview_text=args.preview_text,
+            preview_width=args.width,
+            preview_height=args.height,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add PowerPoint Presentation Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"PowerPoint File:    {args.file}")
+        print(f"Preview Text:       {args.preview_text}")
+        print(f"Preview Dimensions: {args.width}x{args.height}")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "add-word-section":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        updated_rec = add_word_section(
+            section_title=args.title,
+            word_file=args.file,
+            preview_text=args.preview_text,
+            preview_width=args.width,
+            preview_height=args.height,
+            experiment_record=rec,
+        )
+        print("\n--- Pipeline Pilot 'Add Word Section' Component Result ---")
+        print(f"Section Title:      {args.title}")
+        print(f"Word File:          {args.file}")
+        print(f"Preview Text:       {args.preview_text}")
+        print(f"Preview Dimensions: {args.width}x{args.height}")
+        print(f"Total Sections:     {len(updated_rec.get('simplesections', []))}")
+        print(f"Last Added Section: {json.dumps(updated_rec.get('last_added_section'), indent=2)}\n")
+
+    elif args.command == "extract-sections":
+        try:
+            rec = json.loads(args.record)
+        except Exception:
+            rec = {}
+        sections = extract_sections(
+            experiment_record=rec,
+            experiment_id=args.exp,
+            what_to_extract=args.what,
+            section_types=args.types,
+        )
+        print("\n--- Pipeline Pilot 'Extract Sections from Experiment' Component Result ---")
+        print(f"Experiment ID:      {args.exp}")
+        print(f"What To Extract:    {args.what}")
+        print(f"Filter Types:       {args.types}")
+        print(f"Extracted Count:    {len(sections)}")
+        print(f"Extracted Sections:\n{json.dumps(sections, indent=2)}\n")
+
+    elif args.command == "subprotocol":
+        try:
+            records = json.loads(args.records)
+        except Exception:
+            records = []
+        result = run_subprotocol(
+            name=args.name,
+            run_to_completion=args.run_to_completion,
+            categorize_using=args.categorize_using or None,
+            declare_local=args.declare_local or None,
+            records=records,
+        )
+        print("\n--- Pipeline Pilot 'Subprotocol' Execution Result ---")
+        print(f"Subprotocol:        {result.get('subprotocol_name')}")
+        print(f"RunToCompletion:    {result.get('run_to_completion')}")
+        if result.get("categorize_using"):
+            print(f"Categorize Using:   {result.get('categorize_using')}")
+        print(f"Total Input:        {result.get('total_input')}")
+        print(f"Passed Count:       {result.get('passed_count')}")
+        print(f"Failed Count:       {result.get('failed_count')}")
+        print(f"Result:\n{json.dumps(result, indent=2)}\n")
 
     elif args.command == "test-components":
         import unittest

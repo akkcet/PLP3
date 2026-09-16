@@ -36,7 +36,27 @@ class BioviaNotebookClient:
                 "id": f"EXP_{experiment_number}_UUID",
                 "number": experiment_number,
                 "status": "In Progress",
-                "owner": "arun.khuntia"
+                "owner": "arun.khuntia",
+                "simplesections": [
+                    {
+                        "id": "sec_001",
+                        "sectionTitle": "Calibration Curve",
+                        "sectionType": "Excel Worksheet",
+                        "indexindocument": 1,
+                    },
+                    {
+                        "id": "sec_002",
+                        "sectionTitle": "Microscopy Observation",
+                        "sectionType": "Image",
+                        "indexindocument": 2,
+                    },
+                    {
+                        "id": "sec_003",
+                        "sectionTitle": "Analytical Summary",
+                        "sectionType": "PDF Document",
+                        "indexindocument": 3,
+                    },
+                ],
             }
 
         url = f"{self.base_url}/api/v2/experiments?number={urllib.parse.quote(experiment_number)}"
@@ -57,8 +77,32 @@ class BioviaNotebookClient:
             return {
                 "id": f"EXP_{experiment_number}_SIMULATED",
                 "number": experiment_number,
-                "status": "Simulated"
+                "status": "Simulated",
+                "simplesections": [
+                    {
+                        "id": "sec_001",
+                        "sectionTitle": "Calibration Curve",
+                        "sectionType": "Excel Worksheet",
+                        "indexindocument": 1,
+                    },
+                    {
+                        "id": "sec_002",
+                        "sectionTitle": "Microscopy Observation",
+                        "sectionType": "Image",
+                        "indexindocument": 2,
+                    },
+                    {
+                        "id": "sec_003",
+                        "sectionTitle": "Analytical Summary",
+                        "sectionType": "PDF Document",
+                        "indexindocument": 3,
+                    },
+                ],
             }
+
+    def get_experiment(self, experiment_number: str) -> Dict[str, Any]:
+        """Alias for query_experiment."""
+        return self.query_experiment(experiment_number)
 
     def add_section(
         self,
@@ -100,6 +144,10 @@ class BioviaNotebookClient:
     def add_word_section(self, experiment_id: str, title: str, file_path: Path) -> str:
         """Replaces PLP 'Add Word Section' (LocalID 20)."""
         return self.add_section(experiment_id, "word", title, file_path)
+
+    def add_image_section(self, experiment_id: str, title: str, file_path: Path, action: str = "Replace") -> str:
+        """Replaces PLP 'Add Image Section' (LocalID 7 / {F4D376EB-B83C-449E-840C-E2EC31218298})."""
+        return self.add_section(experiment_id, "image", title, file_path, {"action": action})
 
     def add_attachment_section(self, experiment_id: str, title: str, file_path: Path) -> str:
         """Replaces PLP 'Add Attachment' (LocalID 5). Fallback for raw data."""
