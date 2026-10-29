@@ -60,6 +60,7 @@ def main():
     p_conn.add_argument("--url", type=str, default="https://notebook.corp.internal/eln", help="Server URL")
     p_conn.add_argument("--auth", type=str, default="Use Notebook Session Token", help="Authentication Method")
     p_conn.add_argument("--user", type=str, default="arun.khuntia", help="Notebook Username")
+    p_conn.add_argument("--password", type=str, default="", help="Notebook password")
     p_conn.add_argument("--token", type=str, default="", help="Session token")
 
     # Command 4: experiment-query
@@ -69,6 +70,10 @@ def main():
     p_query.add_argument("--filter-type", type=str, default="Equals", help="Filter Type: 'Equals', 'Contains', 'Starts With'")
     p_query.add_argument("--filter-val", type=str, default="EXP-2026-XRF-01", help="Filter Value")
     p_query.add_argument("--max", type=int, default=10, help="Maximum records")
+    p_query.add_argument("--url", type=str, default="https://notebook.unilever.com")
+    p_query.add_argument("--user", type=str, default="")
+
+    p_query.add_argument( "--password", type=str, default="")
 
     # Command 5: parse-plp
     p_plp = subparsers.add_parser("parse-plp", help="Parse a Biovia PLP XML protocol export")
@@ -219,8 +224,9 @@ def main():
             server_url=args.url,
             authentication_method=args.auth,
             username=args.user,
+            password=args.password or None,
             session_token=args.token or None,
-            mock_mode=True
+            #mock_mode=True
         )
         print("\n--- Pipeline Pilot 'Notebook Connection' Component Result ---")
         print(f"Connection Name:       {conn.connection_name}")
@@ -233,7 +239,18 @@ def main():
         print(f"Connection Hash Dict:  {json.dumps(conn.raw_connection_hash, indent=2)}\n")
 
     elif args.command == "experiment-query":
-        conn = notebook_connection(connection_name=args.connection, mock_mode=True)
+        # conn = notebook_connection(connection_name=args.connection, 
+        #                            authentication_method="Use Notebook Session Token",
+        #                            session_token="dummy")
+        print("URL =", args.url)
+        print("USER =", args.user)
+        print("PASSWORD =", "*" * len(args.password))
+        conn = notebook_connection(
+                    server_url=args.url,
+                    authentication_method="Use Username and Password Parameters",
+                    username=args.user,
+                    password=args.password,
+                )
         records = experiment_query(
             connection=conn,
             filter_by=args.filter_by,
@@ -253,6 +270,7 @@ def main():
             for s in rec.get('simplesections', []):
                 print(f"      - [{s.get('sectionType')}] {s.get('title')}")
             print()
+        print(json.dumps(records, indent=2))
 
     elif args.command == "parse-plp":
         parser_obj = PlpProtocolXmlParser(args.xml_file)

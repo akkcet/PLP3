@@ -1,0 +1,1064 @@
+{
+    "nodes": [
+        {
+            "node_id": "component_1",
+            "node_type": "component",
+            "name": "Delete File",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_2",
+            "node_type": "component",
+            "name": "HTML Template",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_3",
+            "node_type": "component",
+            "name": "Tile Horizontal",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_4",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_5",
+            "node_type": "component",
+            "name": "Tile Vertical",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_6",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_7",
+            "node_type": "component",
+            "name": "File Chooser",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_8",
+            "node_type": "component",
+            "name": "Submit Button",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_9",
+            "node_type": "component",
+            "name": "Input Form",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_10",
+            "node_type": "component",
+            "name": "SDC Page",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_11",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_12",
+            "node_type": "component",
+            "name": "Image from File",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_13",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_14",
+            "node_type": "component",
+            "name": "No-op",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_15",
+            "node_type": "component",
+            "name": "Text",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_16",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_17",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_18",
+            "node_type": "component",
+            "name": "Image from File",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_19",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_20",
+            "node_type": "component",
+            "name": "No-op",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_21",
+            "node_type": "component",
+            "name": "Text",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_22",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_23",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_24",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_25",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_26",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_27",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_28",
+            "node_type": "component",
+            "name": "Pass Port Data to Reporting",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_29",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_30",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_31",
+            "node_type": "component",
+            "name": "Include",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_32",
+            "node_type": "component",
+            "name": "JavaScript",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_33",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_34",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_35",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_36",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_37",
+            "node_type": "component",
+            "name": "HTML Report Viewer",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_38",
+            "node_type": "component",
+            "name": "Image from File",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_39",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_40",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_41",
+            "node_type": "component",
+            "name": "JavaScript",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_42",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_43",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_44",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_45",
+            "node_type": "component",
+            "name": "Global Data Tree Viewer",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_46",
+            "node_type": "component",
+            "name": "Python (on Server)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_47",
+            "node_type": "component",
+            "name": "Custom Manipulator (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_48",
+            "node_type": "component",
+            "name": "List Box",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_49",
+            "node_type": "component",
+            "name": "Submit Button",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_50",
+            "node_type": "component",
+            "name": "Input Form",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_51",
+            "node_type": "component",
+            "name": "Dynamic Content Container",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_52",
+            "node_type": "component",
+            "name": "Text",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_53",
+            "node_type": "component",
+            "name": "SDC Page",
+            "attributes": {
+                "role": "PlpComponentRole.GREEN_UI_GENERATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_54",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_55",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_56",
+            "node_type": "component",
+            "name": "Experiment Query",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_57",
+            "node_type": "component",
+            "name": "Add PDF Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_58",
+            "node_type": "component",
+            "name": "Update Notebook",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_59",
+            "node_type": "component",
+            "name": "Notebook Connection",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_60",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_61",
+            "node_type": "component",
+            "name": "Experiment Query",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_62",
+            "node_type": "component",
+            "name": "Add Excel Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_63",
+            "node_type": "component",
+            "name": "Update Notebook",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_64",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_65",
+            "node_type": "component",
+            "name": "Experiment Query",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_66",
+            "node_type": "component",
+            "name": "Add PowerPoint Presentation Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_67",
+            "node_type": "component",
+            "name": "Update Notebook",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_68",
+            "node_type": "component",
+            "name": "Custom Manipulator (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_69",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_70",
+            "node_type": "component",
+            "name": "Experiment Query",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_71",
+            "node_type": "component",
+            "name": "Add Word Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_72",
+            "node_type": "component",
+            "name": "Update Notebook",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_73",
+            "node_type": "component",
+            "name": "Experiment Query",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_74",
+            "node_type": "component",
+            "name": "Add File Attachment Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_75",
+            "node_type": "component",
+            "name": "Update Notebook",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_76",
+            "node_type": "component",
+            "name": "Delete File",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_77",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_78",
+            "node_type": "component",
+            "name": "Python (on Server)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_79",
+            "node_type": "component",
+            "name": "Custom Manipulator (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_80",
+            "node_type": "component",
+            "name": "Python (on Server)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_81",
+            "node_type": "component",
+            "name": "Directory Watcher",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "component_82",
+            "node_type": "component",
+            "name": "Subprotocol",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_83",
+            "node_type": "component",
+            "name": "Custom Manipulator (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_84",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_85",
+            "node_type": "component",
+            "name": "Add PDF Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_86",
+            "node_type": "component",
+            "name": "Add File Attachment Section",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_87",
+            "node_type": "component",
+            "name": "Custom Filter (PilotScript)",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.REUSABLE_AVAILABLE"
+            }
+        },
+        {
+            "node_id": "component_88",
+            "node_type": "component",
+            "name": "Delete File",
+            "attributes": {
+                "role": "PlpComponentRole.BLUE_DATA_MANIPULATOR",
+                "status": "ComponentStatus.MISSING"
+            }
+        },
+        {
+            "node_id": "step_1",
+            "node_type": "workflow_step",
+            "name": "Upload XML",
+            "attributes": {
+                "action": "UPLOAD"
+            }
+        },
+        {
+            "node_id": "step_2",
+            "node_type": "workflow_step",
+            "name": "Parse XML",
+            "attributes": {
+                "action": "PROCESS"
+            }
+        },
+        {
+            "node_id": "step_3",
+            "node_type": "workflow_step",
+            "name": "Select Files",
+            "attributes": {
+                "action": "SELECTION"
+            }
+        },
+        {
+            "node_id": "step_4",
+            "node_type": "workflow_step",
+            "name": "Attach To ELN",
+            "attributes": {
+                "action": "IMPORT"
+            }
+        },
+        {
+            "node_id": "custom_filter_custom_filter_template",
+            "node_type": "template",
+            "name": "custom_filter_custom_filter_template",
+            "attributes": {
+                "category": "GENERAL",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "custom_filter_custom_manipulator_template",
+            "node_type": "template",
+            "name": "custom_filter_custom_manipulator_template",
+            "attributes": {
+                "category": "GENERAL",
+                "confidence": 0.2
+            }
+        },
+        {
+            "node_id": "custom_manipulator_custom_filter_template",
+            "node_type": "template",
+            "name": "custom_manipulator_custom_filter_template",
+            "attributes": {
+                "category": "GENERAL",
+                "confidence": 0.3
+            }
+        },
+        {
+            "node_id": "custom_filter_experiment_query_template",
+            "node_type": "template",
+            "name": "custom_filter_experiment_query_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.4
+            }
+        },
+        {
+            "node_id": "experiment_query_add_pdf_section_template",
+            "node_type": "template",
+            "name": "experiment_query_add_pdf_section_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "add_pdf_section_notebook_connection_template",
+            "node_type": "template",
+            "name": "add_pdf_section_notebook_connection_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "notebook_connection_custom_filter_template",
+            "node_type": "template",
+            "name": "notebook_connection_custom_filter_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "experiment_query_add_excel_section_template",
+            "node_type": "template",
+            "name": "experiment_query_add_excel_section_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "add_excel_section_custom_filter_template",
+            "node_type": "template",
+            "name": "add_excel_section_custom_filter_template",
+            "attributes": {
+                "category": "IMPORT",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "experiment_query_custom_manipulator_template",
+            "node_type": "template",
+            "name": "experiment_query_custom_manipulator_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "experiment_query_add_word_section_template",
+            "node_type": "template",
+            "name": "experiment_query_add_word_section_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "add_word_section_experiment_query_template",
+            "node_type": "template",
+            "name": "add_word_section_experiment_query_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "experiment_query_custom_filter_template",
+            "node_type": "template",
+            "name": "experiment_query_custom_filter_template",
+            "attributes": {
+                "category": "ELN",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "custom_manipulator_custom_manipulator_template",
+            "node_type": "template",
+            "name": "custom_manipulator_custom_manipulator_template",
+            "attributes": {
+                "category": "GENERAL",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "custom_filter_add_pdf_section_template",
+            "node_type": "template",
+            "name": "custom_filter_add_pdf_section_template",
+            "attributes": {
+                "category": "IMPORT",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "add_pdf_section_custom_filter_template",
+            "node_type": "template",
+            "name": "add_pdf_section_custom_filter_template",
+            "attributes": {
+                "category": "IMPORT",
+                "confidence": 0.1
+            }
+        },
+        {
+            "node_id": "custom_filter",
+            "node_type": "backend_function",
+            "name": "custom_filter",
+            "attributes": {
+                "inputs": [],
+                "outputs": []
+            }
+        },
+        {
+            "node_id": "custom_manipulator",
+            "node_type": "backend_function",
+            "name": "custom_manipulator",
+            "attributes": {
+                "inputs": [],
+                "outputs": []
+            }
+        },
+        {
+            "node_id": "experiment_query",
+            "node_type": "backend_function",
+            "name": "experiment_query",
+            "attributes": {
+                "inputs": [
+                    "connection"
+                ],
+                "outputs": [
+                    "experiment"
+                ]
+            }
+        },
+        {
+            "node_id": "add_pdf_section",
+            "node_type": "backend_function",
+            "name": "add_pdf_section",
+            "attributes": {
+                "inputs": [
+                    "connection",
+                    "experiment",
+                    "sections"
+                ],
+                "outputs": [
+                    "pdf_result"
+                ]
+            }
+        },
+        {
+            "node_id": "notebook_connection",
+            "node_type": "backend_function",
+            "name": "notebook_connection",
+            "attributes": {
+                "inputs": [],
+                "outputs": [
+                    "connection"
+                ]
+            }
+        },
+        {
+            "node_id": "add_excel_section",
+            "node_type": "backend_function",
+            "name": "add_excel_section",
+            "attributes": {
+                "inputs": [],
+                "outputs": []
+            }
+        },
+        {
+            "node_id": "add_word_section",
+            "node_type": "backend_function",
+            "name": "add_word_section",
+            "attributes": {
+                "inputs": [],
+                "outputs": []
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source_id": "step_1",
+            "target_id": "step_2",
+            "relation": "next"
+        },
+        {
+            "source_id": "step_2",
+            "target_id": "step_3",
+            "relation": "next"
+        },
+        {
+            "source_id": "step_3",
+            "target_id": "step_4",
+            "relation": "next"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "findings": [
+        {
+            "category": "Components",
+            "severity": "HIGH",
+            "recommendation": "65 components still require implementation.",
+            "confidence": 0.95
+        },
+        {
+            "category": "UI",
+            "severity": "HIGH",
+            "recommendation": "Workflow may require additional pages.",
+            "confidence": 0.85
+        }
+    ],
+    "score": 60
+}

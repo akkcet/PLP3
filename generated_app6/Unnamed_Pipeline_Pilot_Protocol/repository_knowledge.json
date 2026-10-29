@@ -1,0 +1,296 @@
+[
+    {
+        "component_name": "Add Excel Section",
+        "module_name": "biovia_pipeline.components.add_excel_section",
+        "import_statement": "from biovia_pipeline.components.add_excel_section import add_excel_section",
+        "function_name": "add_excel_section",
+        "parameters": [
+            "section_title",
+            "excel_file",
+            "preview_mode",
+            "columns_to_preview",
+            "rows_to_preview",
+            "column_preview_width",
+            "row_preview_height",
+            "preview_custom_image",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds an Excel section to the incoming experiment record.\nReplicates PLP 'Add Excel Section' component behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'Excel Worksheet'\n- Attaches the specified Excel file and configures table preview settings\n- Validates that columns_to_preview < 8\n- Appends the section to the experiment record's simplesections list\n- Serializes the node structure matching @serial := nodeserialize(dataroot())\n\n:param section_title: The title of the new section (required).\n:param excel_file: Path or filename of the Excel spreadsheet (required).\n:param preview_mode: 'Generate from Excel File Content' or 'Use Custom Image'.\n:param columns_to_preview: Number of preview columns (must be < 8).\n:param rows_to_preview: Number of preview rows.\n:param column_preview_width: Width of column preview in pixels.\n:param row_preview_height: Height of row preview in pixels.\n:param preview_custom_image: Optional image path when preview_mode is 'Use Custom Image'.\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_excel_section import add_excel_section\n\nresult = add_excel_section(\n\n    section_title=..., excel_file=..., preview_mode=..., columns_to_preview=..., rows_to_preview=..., column_preview_width=..., row_preview_height=..., preview_custom_image=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add File Attachment Section",
+        "module_name": "biovia_pipeline.components.add_file_attachment_section",
+        "import_statement": "from biovia_pipeline.components.add_file_attachment_section import add_file_attachment_section",
+        "function_name": "add_file_attachment_section",
+        "parameters": [
+            "section_title",
+            "files_to_attach",
+            "action",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds a file attachment section to the incoming experiment record.\nReplicates PLP 'Add File Attachment Section' component behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'File Attachment'\n- Attaches the selected files (supporting single file or list of files)\n- Supports Action modes: 'Replace' (overwrites existing files in section) or 'Append'\n- Serializes the node structure matching @serial := nodeserialize(dataroot())\n\n:param section_title: The title of the new section (required).\n:param files_to_attach: One or more files to add to the section (required).\n:param action: 'Replace' or 'Append' (default 'Replace').\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_file_attachment_section import add_file_attachment_section\n\nresult = add_file_attachment_section(\n\n    section_title=..., files_to_attach=..., action=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add Image Section",
+        "module_name": "biovia_pipeline.components.add_image_section",
+        "import_statement": "from biovia_pipeline.components.add_image_section import add_image_section",
+        "function_name": "add_image_section",
+        "parameters": [
+            "section_title",
+            "image_file",
+            "action",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds an Image section to the incoming experiment record.\nReplicates PLP 'Add Image Section' component behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'Image'\n- Adds the image selected in the Image File parameter (PNG, JPG, BMP, TIFF, SVG)\n- Action modes: 'Replace' (replaces existing image content) or 'Append'\n- Serializes the node structure matching @serial := nodeserialize(dataroot())\n\n:param section_title: The title of the new section (required).\n:param image_file: Path or filename of the image (required).\n:param action: 'Replace' or 'Append' (default 'Replace').\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_image_section import add_image_section\n\nresult = add_image_section(\n\n    section_title=..., image_file=..., action=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add Pdf Section",
+        "module_name": "biovia_pipeline.components.add_pdf_section",
+        "import_statement": "from biovia_pipeline.components.add_pdf_section import add_pdf_section",
+        "function_name": "add_pdf_section",
+        "parameters": [
+            "section_title",
+            "pdf_file",
+            "preview_page_list",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds a PDF section to the incoming experiment record.\nReplicates PLP 'Add PDF Section' component behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'PDF Document'\n- Attaches the selected PDF file and configures the preview page range\n- Serializes the node structure matching @serial := nodeserialize(dataroot())\n\n:param section_title: The title of the new section (required).\n:param pdf_file: Path or filename of the PDF document (required).\n:param preview_page_list: Optional page list/range for thumbnail preview (e.g. '1-5', '1,2').\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_pdf_section import add_pdf_section\n\nresult = add_pdf_section(\n\n    section_title=..., pdf_file=..., preview_page_list=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add Powerpoint Section",
+        "module_name": "biovia_pipeline.components.add_powerpoint_section",
+        "import_statement": "from biovia_pipeline.components.add_powerpoint_section import add_powerpoint_section",
+        "function_name": "add_powerpoint_section",
+        "parameters": [
+            "section_title",
+            "powerpoint_file",
+            "preview_text",
+            "preview_width",
+            "preview_height",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds a PowerPoint Presentation section to the incoming experiment record.\nReplicates PLP 'Add PowerPoint Presentation Section' subprotocol behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'PowerPoint Presentation'\n- Creates a message preview instructing user that preview will be generated when file is edited in Notebook\n- Formats default preview width (600) and height (30)\n- Serializes node structure and appends to the experiment record\n\n:param section_title: The title of the new section (required).\n:param powerpoint_file: Path or filename of the PowerPoint presentation (required).\n:param preview_text: Message rendered on canvas/chart (default: \"Preview will be generated when the file is edited.\").\n:param preview_width: Preview image width in pixels (default: 600).\n:param preview_height: Preview image height in pixels (default: 30).\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:param author: Optional section author.\n:param connection_name: Notebook connection identifier (default: \"Connection1\").\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_powerpoint_section import add_powerpoint_section\n\nresult = add_powerpoint_section(\n\n    section_title=..., powerpoint_file=..., preview_text=..., preview_width=..., preview_height=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add Word Section",
+        "module_name": "biovia_pipeline.components.add_word_section",
+        "import_statement": "from biovia_pipeline.components.add_word_section import add_word_section",
+        "function_name": "add_word_section",
+        "parameters": [
+            "section_title",
+            "word_file",
+            "preview_text",
+            "preview_width",
+            "preview_height",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds a Word section to the incoming experiment record.\nReplicates PLP 'Add Word Section' subprotocol behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'Word Document'\n- Creates a message preview instructing user that preview will be generated when file is edited in Notebook\n- Formats default preview width (600) and height (30)\n- Serializes node structure and appends to the experiment record\n\n:param section_title: The title of the new section (required).\n:param word_file: Path or filename of the Word document (.doc, .docx) (required).\n:param preview_text: Message rendered on canvas/chart (default: \"Preview will be generated when the file is edited.\").\n:param preview_width: Preview image width in pixels (default: 600).\n:param preview_height: Preview image height in pixels (default: 30).\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:param author: Optional section author.\n:param connection_name: Notebook connection identifier (default: \"Connection1\").\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.add_word_section import add_word_section\n\nresult = add_word_section(\n\n    section_title=..., word_file=..., preview_text=..., preview_width=..., preview_height=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Add Excel Section",
+        "module_name": "biovia_pipeline.components.cli",
+        "import_statement": "from biovia_pipeline.components.cli import add_excel_section",
+        "function_name": "add_excel_section",
+        "parameters": [
+            "section_title",
+            "excel_file",
+            "preview_mode",
+            "columns_to_preview",
+            "rows_to_preview",
+            "column_preview_width",
+            "row_preview_height",
+            "preview_custom_image",
+            "experiment_record",
+            "experiment_id",
+            "client",
+            "author",
+            "connection_name"
+        ],
+        "docstring": "Adds an Excel section to the incoming experiment record.\nReplicates PLP 'Add Excel Section' component behavior.\n\nPer Pipeline Pilot specification:\n- Creates a local Section record of type 'Excel Worksheet'\n- Attaches the specified Excel file and configures table preview settings\n- Validates that columns_to_preview < 8\n- Appends the section to the experiment record's simplesections list\n- Serializes the node structure matching @serial := nodeserialize(dataroot())\n\n:param section_title: The title of the new section (required).\n:param excel_file: Path or filename of the Excel spreadsheet (required).\n:param preview_mode: 'Generate from Excel File Content' or 'Use Custom Image'.\n:param columns_to_preview: Number of preview columns (must be < 8).\n:param rows_to_preview: Number of preview rows.\n:param column_preview_width: Width of column preview in pixels.\n:param row_preview_height: Height of row preview in pixels.\n:param preview_custom_image: Optional image path when preview_mode is 'Use Custom Image'.\n:param experiment_record: Optional dictionary representing incoming experiment record.\n:param experiment_id: Optional experiment identifier.\n:param client: Optional BioviaNotebookClient for direct ELN persistence.\n:return: Updated experiment record dictionary with the newly added section.",
+        "category": "generic",
+        "usage_example": "\nfrom biovia_pipeline.components.cli import add_excel_section\n\nresult = add_excel_section(\n\n    section_title=..., excel_file=..., preview_mode=..., columns_to_preview=..., rows_to_preview=..., column_preview_width=..., row_preview_height=..., preview_custom_image=..., experiment_record=..., experiment_id=..., client=..., author=..., connection_name=...\n\n)\n"
+    },
+    {
+        "component_name": "Custom Filter",
+        "module_name": "biovia_pipeline.components.custom_filter",
+        "import_statement": "from biovia_pipeline.components.custom_filter import custom_filter",
+        "function_name": "custom_filter",
+        "parameters": [
+            "expression",
+            "record",
+            "globals_dict"
+        ],
+        "docstring": "Unified implementation of the Biovia Pipeline Pilot 'Custom Filter' component.\n\nIn Pipeline Pilot, 'Custom Filter' is a single component configured with an\n'Expression' argument written in PilotScript (PLP script). This single function\naccepts that PLP script expression and evaluates whether an incoming data record\npasses the filter (True) or is filtered out (False).\n\nParameters:\n    expression (str): The PLP script / PilotScript expression string.\n        Examples:\n          - \"findsubstring(DocRelativepath, '.pdf')>1\"\n          - \"findsubstring(DocRelativepath, '.xlsx')>1\"\n          - \"@experiment_number is defined and @experiment_number is ne '' and @filelocation is eq ''\"\n          - \"@xml is defined and @xml ne '' and @filelist is eq ''\"\n          - \"@filelist is defined and @filelist is ne ''\"\n    record (dict, optional): Current data record attributes (e.g. {'DocRelativepath': 'test.pdf'})\n    globals_dict (dict, optional): Global workflow variables (e.g. {'experiment_number': 'EXP-2026-01'})\n\nReturns:\n    bool: True if the record/condition passes the filter, False otherwise.",
+        "category": "filter",
+        "usage_example": "\nfrom biovia_pipeline.components.custom_filter import custom_filter\n\nresult = custom_filter(\n\n    expression=..., record=..., globals_dict=...\n\n)\n"
+    },
+    {
+        "component_name": "Custom Manipulator",
+        "module_name": "biovia_pipeline.components.custom_manipulator",
+        "import_statement": "from biovia_pipeline.components.custom_manipulator import custom_manipulator",
+        "function_name": "custom_manipulator",
+        "parameters": [
+            "expression",
+            "record",
+            "globals_dict",
+            "locals_dict",
+            "initial_expression",
+            "final_expression",
+            "keep_calculated_properties"
+        ],
+        "docstring": "Unified implementation of the Biovia Pipeline Pilot 'Custom Manipulator (PilotScript)' component.\n\nIn Pipeline Pilot, the Custom Manipulator evaluates PilotScript statements for each incoming record.\nIt can query or alter properties on data records (%), access/mutate globals (@), and use local variables (#).\n\nParameters:\n    expression (str): Main PilotScript expression or script block.\n    record (dict, optional): Incoming record attributes to manipulate.\n    globals_dict (dict, optional): Global workflow state.\n    locals_dict (dict, optional): Component-scoped local variables.\n    initial_expression (str, optional): PilotScript executed once upon initialization.\n    final_expression (str, optional): PilotScript executed upon completion.\n    keep_calculated_properties (bool): If True, retains newly assigned record properties.\n\nReturns:\n    Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:\n        (updated_record, updated_globals, updated_locals)",
+        "category": "transform",
+        "usage_example": "\nfrom biovia_pipeline.components.custom_manipulator import custom_manipulator\n\nresult = custom_manipulator(\n\n    expression=..., record=..., globals_dict=..., locals_dict=..., initial_expression=..., final_expression=..., keep_calculated_properties=...\n\n)\n"
+    },
+    {
+        "component_name": "Decode Experiment Signing Status",
+        "module_name": "biovia_pipeline.components.experiment_query",
+        "import_statement": "from biovia_pipeline.components.experiment_query import decode_experiment_signing_status",
+        "function_name": "decode_experiment_signing_status",
+        "parameters": [
+            "status_id"
+        ],
+        "docstring": "Replicates PLP subprotocol 'Decode Experiment Signing Status'.",
+        "category": "query",
+        "usage_example": "\nfrom biovia_pipeline.components.experiment_query import decode_experiment_signing_status\n\nresult = decode_experiment_signing_status(\n\n    status_id=...\n\n)\n"
+    },
+    {
+        "component_name": "Extract Sections",
+        "module_name": "biovia_pipeline.components.extract_sections",
+        "import_statement": "from biovia_pipeline.components.extract_sections import extract_sections",
+        "function_name": "extract_sections",
+        "parameters": [
+            "experiment_record",
+            "experiment_id",
+            "what_to_extract",
+            "section_types",
+            "connection",
+            "client",
+            "sort_by_index",
+            "deduplicate_by_id"
+        ],
+        "docstring": "Extracts, filters, deduplicates, and sorts sections from an incoming experiment record or ELN server.\nReplicates PLP 'Extract Sections from Experiment' component behavior.\n\n:param experiment_record: Incoming Experiment or Template record dictionary (required if experiment_id is not given).\n:param experiment_id: Direct experiment number or ID override.\n:param what_to_extract: \"All Section Types\" or \"Selected Section Types\".\n:param section_types: List of section type names when what_to_extract is \"Selected Section Types\".\n:param connection: Optional NotebookConnectionObject holding credentials / endpoint.\n:param client: Optional BioviaNotebookClient for live/mock ELN queries.\n:param sort_by_index: If True, sorts sections by indexindocument ascending (PLP Sort Data LocalID 56).\n:param deduplicate_by_id: If True, keeps only first occurrence of each section id (PLP First Occurrence Filter LocalID 35).\n:return: List of extracted section records with enriched metadata and parent experiment linkage.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.extract_sections import extract_sections\n\nresult = extract_sections(\n\n    experiment_record=..., experiment_id=..., what_to_extract=..., section_types=..., connection=..., client=..., sort_by_index=..., deduplicate_by_id=...\n\n)\n"
+    },
+    {
+        "component_name": "Cleanup Directory",
+        "module_name": "biovia_pipeline.components.file_utils",
+        "import_statement": "from biovia_pipeline.components.file_utils import cleanup_directory",
+        "function_name": "cleanup_directory",
+        "parameters": [
+            "target_dir"
+        ],
+        "docstring": "Safely purges contents of the staging directory.\nReplaces PLP 'Delete File' components (LocalID 56 & 55).",
+        "category": "generic",
+        "usage_example": "\nfrom biovia_pipeline.components.file_utils import cleanup_directory\n\nresult = cleanup_directory(\n\n    target_dir=...\n\n)\n"
+    },
+    {
+        "component_name": "Notebook Connection",
+        "module_name": "biovia_pipeline.components.notebook_connection",
+        "import_statement": "from biovia_pipeline.components.notebook_connection import notebook_connection",
+        "function_name": "notebook_connection",
+        "parameters": [
+            "connection_name",
+            "server_url",
+            "authentication_method",
+            "username",
+            "password",
+            "session_token",
+            "timeout"
+        ],
+        "docstring": "Create a Notebook connection object.\n\nAuthentication options:\n    Use Notebook Session Token\n    Use Username and Password Parameters",
+        "category": "connection",
+        "usage_example": "\nfrom biovia_pipeline.components.notebook_connection import notebook_connection\n\nresult = notebook_connection(\n\n    connection_name=..., server_url=..., authentication_method=..., username=..., password=..., session_token=..., timeout=...\n\n)\n"
+    },
+    {
+        "component_name": "Cleanup Directory",
+        "module_name": "biovia_pipeline.components.pipeline_orchestrator",
+        "import_statement": "from biovia_pipeline.components.pipeline_orchestrator import cleanup_directory",
+        "function_name": "cleanup_directory",
+        "parameters": [
+            "target_dir"
+        ],
+        "docstring": "Safely purges contents of the staging directory.\nReplaces PLP 'Delete File' components (LocalID 56 & 55).",
+        "category": "generic",
+        "usage_example": "\nfrom biovia_pipeline.components.pipeline_orchestrator import cleanup_directory\n\nresult = cleanup_directory(\n\n    target_dir=...\n\n)\n"
+    },
+    {
+        "component_name": "Custom Filter",
+        "module_name": "biovia_pipeline.components.section_dispatcher",
+        "import_statement": "from biovia_pipeline.components.section_dispatcher import custom_filter",
+        "function_name": "custom_filter",
+        "parameters": [
+            "expression",
+            "record",
+            "globals_dict"
+        ],
+        "docstring": "Unified implementation of the Biovia Pipeline Pilot 'Custom Filter' component.\n\nIn Pipeline Pilot, 'Custom Filter' is a single component configured with an\n'Expression' argument written in PilotScript (PLP script). This single function\naccepts that PLP script expression and evaluates whether an incoming data record\npasses the filter (True) or is filtered out (False).\n\nParameters:\n    expression (str): The PLP script / PilotScript expression string.\n        Examples:\n          - \"findsubstring(DocRelativepath, '.pdf')>1\"\n          - \"findsubstring(DocRelativepath, '.xlsx')>1\"\n          - \"@experiment_number is defined and @experiment_number is ne '' and @filelocation is eq ''\"\n          - \"@xml is defined and @xml ne '' and @filelist is eq ''\"\n          - \"@filelist is defined and @filelist is ne ''\"\n    record (dict, optional): Current data record attributes (e.g. {'DocRelativepath': 'test.pdf'})\n    globals_dict (dict, optional): Global workflow variables (e.g. {'experiment_number': 'EXP-2026-01'})\n\nReturns:\n    bool: True if the record/condition passes the filter, False otherwise.",
+        "category": "eln",
+        "usage_example": "\nfrom biovia_pipeline.components.section_dispatcher import custom_filter\n\nresult = custom_filter(\n\n    expression=..., record=..., globals_dict=...\n\n)\n"
+    },
+    {
+        "component_name": "Create Add Powerpoint Subprotocol",
+        "module_name": "biovia_pipeline.components.subprotocol",
+        "import_statement": "from biovia_pipeline.components.subprotocol import create_add_powerpoint_subprotocol",
+        "function_name": "create_add_powerpoint_subprotocol",
+        "parameters": [
+            "section_title",
+            "powerpoint_file",
+            "preview_text",
+            "preview_width",
+            "preview_height"
+        ],
+        "docstring": "Builds the subprotocol corresponding to PLP 'Add PowerPoint Presentation Section'\n(GUID: {E5B6E23D-CC7F-4D04-878E-606E3B4B6E7E}).\nEncapsulates:\n  - LocalID 9: Create Section\n  - LocalID 2: Edit Section\n  - LocalID 18: Custom Manipulator (Canvas preview format)\n  - LocalID 16: Serialize Section XML Node\n  - LocalID 17: Append to Experiment Record",
+        "category": "generic",
+        "usage_example": "\nfrom biovia_pipeline.components.subprotocol import create_add_powerpoint_subprotocol\n\nresult = create_add_powerpoint_subprotocol(\n\n    section_title=..., powerpoint_file=..., preview_text=..., preview_width=..., preview_height=...\n\n)\n"
+    },
+    {
+        "component_name": "Parse Model Xml",
+        "module_name": "biovia_pipeline.components.xml_model_parser",
+        "import_statement": "from biovia_pipeline.components.xml_model_parser import parse_model_xml",
+        "function_name": "parse_model_xml",
+        "parameters": [
+            "xml_source"
+        ],
+        "docstring": "Parses model export XML, extracting generic files, paths, and section titles.\nSupports both <generics><generic>...</generic></generics> format from Pipeline Pilot\nand <Files><File> format.",
+        "category": "generic",
+        "usage_example": "\nfrom biovia_pipeline.components.xml_model_parser import parse_model_xml\n\nresult = parse_model_xml(\n\n    xml_source=...\n\n)\n"
+    }
+]

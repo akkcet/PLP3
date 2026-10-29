@@ -200,6 +200,7 @@ export const REUSABLE_COMPONENTS: ComponentDefinition[] = [
           url: "https://notebook.corp.internal/eln",
           auth: "Use Username and Password Parameters",
           user: "svc_biovia_pipeline",
+          password: "",
           token: "",
         },
       },
@@ -220,6 +221,9 @@ export const REUSABLE_COMPONENTS: ComponentDefinition[] = [
     cliCommand: "python3 -m biovia_pipeline.cli experiment-query --connection NotebookConnection --filter-val EXP-2026-XRF-01",
     defaultInput: {
       connection: "NotebookConnection",
+      notebookUrl: "https://notebook.unilever.com",
+      username: "",
+      password: "",
       filterBy: "Experiment Number",
       filterType: "Equals",
       filterVal: "EXP-2026-XRF-01",
@@ -770,12 +774,16 @@ export const ComponentWorkbench: React.FC = () => {
           url: formData.url,
           auth: formData.auth,
           user: formData.user,
+          password: formData.password,
           token: formData.token,
         };
       } else if (currentComp.id === "experiment_query") {
         endpoint = "/api/python/experiment-query";
         bodyData = {
           connection: formData.connection,
+          notebookUrl: formData.notebookUrl,
+          username: formData.username,
+          password: formData.password,
           filterBy: formData.filterBy,
           filterType: formData.filterType,
           filterVal: formData.filterVal,
@@ -1230,17 +1238,65 @@ print(f"PLP Component:  LocalID {res['component_id']}")
                         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-slate-400 mb-1">
-                        Session Token:
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.token || ""}
-                        onChange={(e) => setFormData({ ...formData, token: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
-                      />
-                    </div>
+                    {formData.auth === "Use Notebook Session Token" && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Session Token:
+                        </label>
+
+                        <input
+                          type="text"
+                          value={formData.token || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              token: e.target.value,
+                            })
+                          }
+                          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                        />
+                      </div>
+                    )}
+
+                    {formData.auth === "Use Username and Password Parameters" && (
+                      <>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-400 mb-1">
+                            Username:
+                          </label>
+
+                          <input
+                            type="text"
+                            value={formData.user || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                user: e.target.value,
+                              })
+                            }
+                            className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-slate-400 mb-1">
+                            Password:
+                          </label>
+
+                          <input
+                            type="password"
+                            value={formData.password || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                password: e.target.value,
+                              })
+                            }
+                            className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                          />
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
 
@@ -1285,6 +1341,59 @@ print(f"PLP Component:  LocalID {res['component_id']}")
                         value={formData.filterVal || ""}
                         onChange={(e) => setFormData({ ...formData, filterVal: e.target.value })}
                         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Notebook URL:
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData.notebookUrl || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            notebookUrl: e.target.value,
+                          })
+                        }
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Username:
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData.username || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            username: e.target.value,
+                          })
+                        }
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Password:
+                      </label>
+
+                      <input
+                        type="password"
+                        value={formData.password || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            password: e.target.value,
+                          })
+                        }
+                        className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200"
                       />
                     </div>
                   </>

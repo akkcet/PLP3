@@ -12,6 +12,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Set, Tuple
 import xml.etree.ElementTree as ET
 import re
+import os
 
 class PlpComponentRole(str, Enum):
     BLUE_DATA_MANIPULATOR = "BLUE_DATA_MANIPULATOR"  # Translated to Python code
@@ -339,6 +340,13 @@ class ProtocolAnalysisResult:
     declared_globals: Dict[str, Any]
     web_app_schema: Dict[str, Any]
     summary_message: str
+    ui_missing_components: List[str] = field(
+        default_factory=list
+    )
+
+    backend_missing_components: List[str] = field(
+        default_factory=list
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -357,7 +365,59 @@ class ProtocolAnalysisResult:
             "webAppSchema": self.web_app_schema,
             "summaryMessage": self.summary_message,
         }
+def classify_by_component_path(component_path: str):
+    path = (component_path or "").lower()
 
+    if (
+        "reporting and visualization"
+        in path
+    ):
+        return (
+            PlpComponentRole
+            .GREEN_UI_GENERATOR
+        )
+
+    if (
+        "web application development"
+        in path
+    ):
+        return (
+            PlpComponentRole
+            .GREEN_UI_GENERATOR
+        )
+
+    if (
+        "html elements"
+        in path
+    ):
+        return (
+            PlpComponentRole
+            .GREEN_UI_GENERATOR
+        )
+
+    if (
+        "forms"
+        in path
+    ):
+        return (
+            PlpComponentRole
+            .GREEN_UI_GENERATOR
+        )
+
+
+    if "web application development" in path:
+        return PlpComponentRole.GREEN_UI_GENERATOR
+
+    if "reporting\\" in path:
+        return PlpComponentRole.GREEN_UI_GENERATOR
+
+    # if "data access and manipulation" in path:
+    #     return PlpComponentRole.BLUE_DATA_MANIPULATOR
+
+    # if "utilities" in path:
+    #     return PlpComponentRole.BLUE_DATA_MANIPULATOR
+
+    return None
 
 def match_component(visual_name: str, comp_type: str, component_class: str = "") -> Tuple[ComponentStatus, PlpComponentRole, Optional[str], str, Optional[str]]:
     """
@@ -430,7 +490,14 @@ def analyze_protocol_xml(xml_content: str) -> ProtocolAnalysisResult:
 
     root = ET.fromstring(clean_xml)
 
-    ns = {"sci": "http://www.scitegic.com/protocol"}
+    #ns = {"sci": "http://www.scitegic.com/protocol"}
+    def get_namespace(root):
+        if root.tag.startswith("{"):
+            return root.tag.split("}")[0][1:]
+        return ""
+
+    ns_uri = get_namespace(root)
+    ns = {"sci": ns_uri}
     def find_all(element, path):
         res = element.findall(path, ns)
         if not res:
@@ -450,33 +517,145 @@ def analyze_protocol_xml(xml_content: str) -> ProtocolAnalysisResult:
             declared_globals[param_name] = param_val
 
     # Find all components/nodes
-    component_elements = find_all(root, ".//sci:component") or root.findall(".//component")
+    #component_elements = find_all(root, ".//sci:component") or root.findall(".//component")
+    component_elements = []
 
+    for data_node in root.findall(".//{*}data"):
+        component = data_node.find("{*}component")
+
+        if component is not None:
+            component_elements.append(
+                (data_node, component)
+            )
+    for data_node, component in component_elements:
+
+        visual_name = component.attrib.get("name", "")
+
+        comp_type = (
+            data_node.attrib.get("object")
+            or component.attrib.get("type")
+            or component.attrib.get("class")
+            or visual_name
+        )
     resolved_nodes: List[ResolvedNode] = []
     matched_count = 0
     missing_count = 0
     blue_count = 0
     green_count = 0
+    ui_missing_components = []
+    backend_missing_components = []
+    
+    # for elem in component_elements:
+    #     local_id = elem.attrib.get("localid") or elem.attrib.get("id") or str(len(resolved_nodes) + 1)
+    #     visual_name = elem.attrib.get("name") or elem.attrib.get("title") or f"Component {local_id}"
+    #     comp_type = elem.attrib.get("type") or elem.attrib.get("class") or visual_name
+    for data_node, elem in component_elements:
 
-    for elem in component_elements:
-        local_id = elem.attrib.get("localid") or elem.attrib.get("id") or str(len(resolved_nodes) + 1)
-        visual_name = elem.attrib.get("name") or elem.attrib.get("title") or f"Component {local_id}"
-        comp_type = elem.attrib.get("type") or elem.attrib.get("class") or visual_name
+        local_id = (
+            elem.attrib.get("localid")
+            or elem.attrib.get("id")
+            or str(len(resolved_nodes) + 1)
+        )
+
+        visual_name = (
+            elem.attrib.get("name")
+            or elem.attrib.get("title")
+            or f"Component {local_id}"
+        )
+
+        comp_type = (
+            data_node.attrib.get("object")
+            or elem.attrib.get("type")
+            or elem.attrib.get("class")
+            or visual_name
+        )
         is_subp = elem.tag.endswith("subprotocol") or elem.attrib.get("issubprotocol") == "true" or "subprotocol" in comp_type.lower()
 
         # Parse parameter arguments
         params = {}
         script_code = None
+        
         for arg in find_all(elem, ".//sci:arg") or elem.findall(".//arg"):
             p_name = arg.attrib.get("name") or arg.attrib.get("id") or ""
-            p_val = arg.text or arg.attrib.get("value") or ""
+            #p_val = arg.text or arg.attrib.get("value") or ""
+            value_node = arg.find("{*}value")
+
+            if value_node is not None:
+                p_val = "".join(value_node.itertext()).strip()
+            else:
+                p_val = "".join(arg.itertext()).strip()
             if p_name:
                 params[p_name] = p_val
             if p_name.lower() in ["expression", "script", "pilotscript", "code"]:
                 script_code = p_val or arg.text
+        component_path = ""
+        component_guid = ""
 
+        for arg in find_all(elem, ".//sci:arg") or elem.findall(".//arg"):
+
+            p_name = arg.attrib.get("name") or ""
+
+            value_node = arg.find("{*}value")
+
+            if value_node is not None:
+                p_val = "".join(value_node.itertext()).strip()
+            else:
+                p_val = "".join(arg.itertext()).strip()
+
+            params[p_name] = p_val
+
+            if p_name == "Component Path":
+                component_path = p_val
+
+            elif p_name == "ComponentGUID":
+                component_guid = p_val
         # Classify & match
-        status, role, matched_key, core_name, ui_widget = match_component(visual_name, comp_type, elem.attrib.get("class", ""))
+        path_role = classify_by_component_path(
+            component_path
+        )
+
+        if path_role:
+
+            role = path_role
+
+            #
+            # Green components are considered
+            # reconstructable by the UI generator.
+            #
+            if role == PlpComponentRole.GREEN_UI_GENERATOR:
+
+                status = (
+                    ComponentStatus.REUSABLE_AVAILABLE
+                )
+
+                matched_key = (
+                    "ui_reconstruction"
+                )
+
+                core_name = visual_name
+
+                ui_widget = visual_name
+
+            else:
+
+                status, role, matched_key, core_name, ui_widget = (
+                    match_component(
+                        visual_name,
+                        comp_type,
+                        component_guid
+                    )
+                )
+
+        else:
+
+            status, role, matched_key, core_name, ui_widget = (
+                match_component(
+                    visual_name,
+                    comp_type,
+                    component_guid
+                )
+            )
+        #status, role, matched_key, core_name, ui_widget = match_component(visual_name, comp_type, elem.attrib.get("class", ""))
 
         if role == PlpComponentRole.BLUE_DATA_MANIPULATOR:
             blue_count += 1
@@ -484,19 +663,39 @@ def analyze_protocol_xml(xml_content: str) -> ProtocolAnalysisResult:
             green_count += 1
 
         if status == ComponentStatus.REUSABLE_AVAILABLE:
+
             matched_count += 1
+
             remediation = None
+
         else:
+
             missing_count += 1
+
             if role == PlpComponentRole.BLUE_DATA_MANIPULATOR:
-                remediation = (
-                    f"Blue Data Manipulator '{core_name}' (Visual: '{visual_name}') is not yet available in "
-                    f"biovia_pipeline. Needs Python porting or replacement with Custom Manipulator."
+
+                backend_missing_components.append(
+                    visual_name
                 )
-            else:
+
                 remediation = (
-                    f"Green UI Component '{core_name}' (Visual: '{visual_name}') has no direct template. "
-                    f"Will be synthesized from form inputs or screenshot layout."
+                    f"Blue Data Manipulator '{core_name}' "
+                    f"(Visual: '{visual_name}') is not yet "
+                    f"available in biovia_pipeline. "
+                    f"Needs Python porting or replacement."
+                )
+
+            else:
+
+                ui_missing_components.append(
+                    visual_name
+                )
+
+                remediation = (
+                    f"Green UI Component '{core_name}' "
+                    f"(Visual: '{visual_name}') will be "
+                    f"reconstructed through the UI generation "
+                    f"pipeline."
                 )
 
         resolved_node = ResolvedNode(
@@ -600,4 +799,9 @@ def analyze_protocol_xml(xml_content: str) -> ProtocolAnalysisResult:
         declared_globals=declared_globals,
         web_app_schema=web_app_schema,
         summary_message=summary,
+        ui_missing_components=
+            ui_missing_components,
+
+        backend_missing_components=
+            backend_missing_components,
     )

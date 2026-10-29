@@ -1,0 +1,11 @@
+{
+    "application_name": "Unnamed Pipeline Pilot Protocol",
+    "pages": 1,
+    "workflows": 1,
+    "api_contracts": 23,
+    "mapped_components": 23,
+    "missing_components": 65,
+    "generated_components": 65,
+    "validation_passed": true,
+    "generated_path": "generated_app6\\Unnamed_Pipeline_Pilot_Protocol"
+}

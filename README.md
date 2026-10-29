@@ -64,17 +64,25 @@ tests/
    gcloud services enable run.googleapis.com secretmanager.googleapis.com firestore.googleapis.com
    ```
 
-### Secret Manager Configuration
-Store the Gemini API Key and Azure Storage credentials in Secret Manager:
+### Google Cloud ADC Configuration
+Gemini requests use Vertex AI with Application Default Credentials (ADC), not an API key.
+For local development, authenticate once and configure the project:
 ```bash
-# 1. Create Secrets
-gcloud secrets create GEMINI_API_KEY --replication-policy="automatic"
-echo -n "YOUR_GEMINI_API_KEY" | gcloud secrets versions add GEMINI_API_KEY --data-file=-
+gcloud auth application-default login
+gcloud auth application-default set-quota-project YOUR_GOOGLE_CLOUD_PROJECT_ID
+```
 
+Set these values in `.env`:
+```dotenv
+GOOGLE_CLOUD_PROJECT=YOUR_GOOGLE_CLOUD_PROJECT_ID
+GOOGLE_CLOUD_LOCATION=us-central1
+```
+
+For Cloud Run, grant the service account the Vertex AI User role. Store Azure Storage credentials in Secret Manager:
+```bash
 gcloud secrets create AZURE_STORAGE_KEY --replication-policy="automatic"
 echo -n "YOUR_AZURE_STORAGE_KEY" | gcloud secrets versions add AZURE_STORAGE_KEY --data-file=-
 
-# 2. Grant Cloud Run Service Account Secret Accessor Role
 PROJECT_NUMBER=$(gcloud projects describe $(gcloud config get-value project) --format="value(projectNumber)")
 
 gcloud secrets add-iam-policy-binding GEMINI_API_KEY \
@@ -105,8 +113,8 @@ gcloud run deploy biovia-plp-converter \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-secrets="GEMINI_API_KEY=GEMINI_API_KEY:latest,AZURE_STORAGE_KEY=AZURE_STORAGE_KEY:latest" \
-  --set-env-vars="NODE_ENV=production,AZURE_STORAGE_ACCOUNT=bnlwestges01005,AZURE_SHARE_NAME=rdplp-sbx1"
+  --set-secrets="AZURE_STORAGE_KEY=AZURE_STORAGE_KEY:latest" \
+  --set-env-vars="NODE_ENV=production,GOOGLE_CLOUD_PROJECT=YOUR_GOOGLE_CLOUD_PROJECT_ID,GOOGLE_CLOUD_LOCATION=us-central1,AZURE_STORAGE_ACCOUNT=bnlwestges01005,AZURE_SHARE_NAME=rdplp-sbx1"
 ```
 
 ### Mandatory Verification Binding

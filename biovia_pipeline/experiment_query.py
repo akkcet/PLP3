@@ -157,25 +157,60 @@ def experiment_query(
     # 3. Attempt HTTP call
     results: List[Dict[str, Any]] = []
     try:
-        req = urllib.request.Request(
+        headers = {
+            "Accept": "application/json"
+        }
+
+        headers.update(conn_obj.additional_headers)
+        if conn_obj.session is None:
+            raise RuntimeError(
+                "Notebook Connection does not contain "
+                "an authenticated requests session."
+            )
+
+        response = conn_obj.session.get(
             target_url,
             headers={
-                "Authorization": f"Bearer {conn_obj.session_token}",
-                "Accept": "application/json",
-                **conn_obj.additional_headers
-            }
+                "Accept": "application/json"
+            },
+            timeout=30
         )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            raw_data = json.loads(resp.read().decode("utf-8"))
-            if isinstance(raw_data, list):
-                results = raw_data
-            elif isinstance(raw_data, dict):
-                results = raw_data.get("value", [raw_data])
-    except Exception as ex:
-        logger.warning(f"Experiment query request to {target_url} failed: {ex}")
-        if not mock_data_fallback:
-            raise
 
+        response.raise_for_status()
+
+        raw_data = response.json()
+
+        if isinstance(raw_data, list):
+            results = raw_data
+
+        elif isinstance(raw_data, dict):
+            results = raw_data.get(
+                "value",
+                [raw_data]
+            )
+        # req = urllib.request.Request(
+        #     target_url,
+        #     headers=headers
+
+        # )
+        # print("TOKEN =", conn_obj.session_token)
+        # print("HEADERS =", conn_obj.additional_headers)
+        # print("URL =", target_url)
+        # with urllib.request.urlopen(req, timeout=30) as resp:
+        #     raw_data = json.loads(resp.read().decode("utf-8"))
+        #     if isinstance(raw_data, list):
+        #         results = raw_data
+        #     elif isinstance(raw_data, dict):
+        #         results = raw_data.get("value", [raw_data])
+    # except Exception as ex:
+    #     logger.warning(f"Experiment query request to {target_url} failed: {ex}")
+    #     if not mock_data_fallback:
+    #         raise
+    except urllib.error.HTTPError as e:
+        print("STATUS =", e.code)
+        print("RESPONSE BODY =")
+        print(e.read().decode("utf-8", errors="ignore"))
+        raise
     # 4. Fallback mock generation if offline or testing
     if not results and mock_data_fallback:
         exp_id = filter_value if (filter_by == "Experiment Number" and filter_value) else "EXP-2026-XRF-01"

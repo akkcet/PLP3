@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { execFile } from "child_process";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import { spawn } from "child_process";
 
 dotenv.config();
 
@@ -14,13 +15,18 @@ const PORT = 3000;
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
-// Lazy initialization for Gemini client
+// Lazy initialization for Gemini client using Google Cloud ADC.
 let aiClient: GoogleGenAI | null = null;
 function getAIClient(): GoogleGenAI | null {
   if (!aiClient) {
-    const key = process.env.GEMINI_API_KEY;
-    if (key && key !== "MY_GEMINI_API_KEY") {
-      aiClient = new GoogleGenAI({ apiKey: key });
+    const project = process.env.GOOGLE_CLOUD_PROJECT;
+    const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
+    if (project) {
+      aiClient = new GoogleGenAI({
+        vertexai: true,
+        project,
+        location,
+      });
     }
   }
   return aiClient;
@@ -37,7 +43,7 @@ const MODEL_FALLBACK_LADDER = [
 async function generateContentWithFallback(prompt: string, systemInstruction?: string): Promise<{ text: string; modelUsed: string }> {
   const client = getAIClient();
   if (!client) {
-    throw new Error("GEMINI_API_KEY is not configured in the environment.");
+    throw new Error("GOOGLE_CLOUD_PROJECT is not configured in the environment.");
   }
 
   let lastError: unknown = null;
@@ -67,7 +73,7 @@ async function generateContentWithFallback(prompt: string, systemInstruction?: s
 app.get("/api/health", (_req, res) => {
   res.json({
     status: "ok",
-    hasGeminiKey: Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "MY_GEMINI_API_KEY"),
+    hasGeminiKey: Boolean(process.env.GOOGLE_CLOUD_PROJECT),
     timestamp: new Date().toISOString(),
   });
 });
@@ -85,8 +91,8 @@ app.post("/api/ai/refactor-component", async (req, res) => {
     const client = getAIClient();
     if (!client) {
       return res.status(503).json({
-        error: "Gemini API key is not configured.",
-        suggestion: "Configure GEMINI_API_KEY in the environment secrets to enable AI code generation.",
+        error: "Google Cloud ADC is not configured.",
+        suggestion: "Set GOOGLE_CLOUD_PROJECT and authenticate with Application Default Credentials.",
       });
     }
 
@@ -128,7 +134,7 @@ app.post("/api/ai/transpile-expression", async (req, res) => {
     const client = getAIClient();
     if (!client) {
       return res.status(503).json({
-        error: "Gemini API key not configured.",
+        error: "Google Cloud ADC is not configured.",
         suggestion: "Use client-side PilotScript AST transpiler.",
       });
     }
@@ -158,15 +164,53 @@ Provide:
 // ---------------- Real Python 3 Execution Endpoints ----------------
 
 // Helper to run python3 commands asynchronously
-function runPython(args: string[]): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+// function runPython(args: string[]): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+//   return new Promise((resolve) => {
+//     execFile("python", args, { cwd: process.cwd(), timeout: 15000 }, (error, stdout, stderr) => {
+//       resolve({
+//         stdout: stdout || "",
+//         stderr: stderr || "",
+//         exitCode: error && typeof error.code === "number" ? error.code : 0,
+//       });
+//     });
+//   });
+// }
+function runPython(
+  args: string[],
+  stdinData?: string
+): Promise<{
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+}> {
   return new Promise((resolve) => {
-    execFile("python3", args, { cwd: process.cwd(), timeout: 15000 }, (error, stdout, stderr) => {
+    const proc = spawn("python", args, {
+      cwd: process.cwd()
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    proc.stdout.on("data", (data) => {
+      stdout += data.toString();
+    });
+
+    proc.stderr.on("data", (data) => {
+      stderr += data.toString();
+    });
+
+    proc.on("close", (code) => {
       resolve({
-        stdout: stdout || "",
-        stderr: stderr || "",
-        exitCode: error && typeof error.code === "number" ? error.code : 0,
+        stdout,
+        stderr,
+        exitCode: code ?? 0,
       });
     });
+
+    if (stdinData) {
+      proc.stdin.write(stdinData);
+      proc.stdin.end();
+    }
   });
 }
 
@@ -249,15 +293,41 @@ app.post("/api/python/notebook-connection", async (req, res) => {
   const auth = req.body?.auth || "Use Notebook Session Token";
   const user = req.body?.user || "arun.khuntia";
   const token = req.body?.token || "tok_eln_mock_session_abc";
+  const password = req.body?.password || "";
 
-  const result = await runPython([
-    "-m", "biovia_pipeline.cli", "notebook-connection",
-    "--name", name,
-    "--url", url,
-    "--auth", auth,
-    "--user", user,
-    "--token", token,
-  ]);
+  // const result = await runPython([
+  //   "-m", "biovia_pipeline.cli", "notebook-connection",
+  //   "--name", name,
+  //   "--url", url,
+  //   "--auth", auth,
+  //   "--user", user,
+  //   "--token", token,
+  // ]);
+  const args = [
+  "-m",
+  "biovia_pipeline.cli",
+  "notebook-connection",
+  "--name",
+  name,
+  "--url",
+  url,
+  "--auth",
+  auth,
+];
+
+if (user) {
+  args.push("--user", user);
+}
+
+if (password) {
+  args.push("--password", password);
+}
+
+if (token) {
+  args.push("--token", token);
+}
+
+const result = await runPython(args);
   res.json({
     success: result.exitCode === 0,
     output: result.stdout || result.stderr,
@@ -271,15 +341,50 @@ app.post("/api/python/experiment-query", async (req, res) => {
   const filterType = req.body?.filterType || "Equals";
   const filterVal = req.body?.filterVal || "EXP-2026-XRF-01";
   const max = String(req.body?.max || 10);
+  const notebookUrl = req.body?.notebookUrl;
+  const username = req.body?.username;
+  const password = req.body?.password;
 
-  const result = await runPython([
-    "-m", "biovia_pipeline.cli", "experiment-query",
-    "--connection", connection,
-    "--filter-by", filterBy,
-    "--filter-type", filterType,
-    "--filter-val", filterVal,
-    "--max", max,
-  ]);
+  const args = [
+  "-m",
+  "biovia_pipeline.cli",
+  "experiment-query",
+  "--connection",
+  connection,
+  "--filter-by",
+  filterBy,
+  "--filter-type",
+  filterType,
+  "--filter-val",
+  filterVal,
+  "--max",
+  max,
+];
+
+if (notebookUrl) {
+  args.push("--url", notebookUrl);
+}
+
+if (username) {
+  args.push("--user", username);
+}
+
+if (password) {
+  args.push("--password", password);
+}
+
+const result = await runPython(args);
+console.log("EXPERIMENT QUERY REQuEST");
+console.log({
+  notebookUrl,
+  username,
+  password: password ? "******" : "",
+  filterBy,
+  filterType,
+  filterVal
+});
+
+console.log("ARGS=", args);
   res.json({
     success: result.exitCode === 0,
     output: result.stdout || result.stderr,
@@ -556,6 +661,14 @@ except Exception as e:
       return res.status(400).json({
         error: "Failed to parse and analyze protocol XML.",
         details: result.stderr || result.stdout,
+      });
+    }
+
+    // const parsedResult = JSON.parse(result.stdout);
+    if (!result.stdout?.trim()) {
+      return res.status(500).json({
+        error: "Python returned empty output",
+        details: result.stderr,
       });
     }
 

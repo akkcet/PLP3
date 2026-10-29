@@ -1,20 +1,44 @@
 """
-Biovia Pipeline Pilot 'Notebook Connection' Component
-Faithful Python translation of SciTegic PLP Component: Notebook Connection (version 2)
-Establishes an authenticated session connection object with Biovia Notebook REST API.
+Biovia Pipeline Pilot - Notebook Connection Component
+Production-ready Python implementation.
+
+Supports:
+    1. Existing Notebook Session Token
+    2. Username/Password authentication
 """
+
 import base64
 import json
 import logging
-import os
-import urllib.parse
-import urllib.request
-import urllib.error
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
+import requests
 
 logger = logging.getLogger("biovia_pipeline.notebook_connection")
 
+
+@dataclass
+class NotebookConnectionObject:
+    """
+    Equivalent of the PLP Notebook Connection object.
+    """
+
+    connection_name: str
+    server_url: str
+    api_endpoint: str
+    auth_method: str
+    username: Optional[str]
+    session_token: str
+    ria_token: Optional[str] = None
+    api_version: str = "25.1"
+    additional_headers: Dict[str, str] = field(default_factory=dict)
+    raw_connection_hash: Dict[str, Any] = field(default_factory=dict)
+    session: Optional[requests.Session] = None
+    def to_hash_string(self) -> str:
+        payload = json.dumps(self.raw_connection_hash)
+        return base64.b64encode(
+            payload.encode("utf-8")
+        ).decode("utf-8")
 
 @dataclass
 class NotebookConnectionConfig:
@@ -31,131 +55,196 @@ class NotebookConnectionConfig:
     api_version: str = "25.1"
     mock_mode: bool = False
 
-
-@dataclass
-class NotebookConnectionObject:
-    """
-    The generated Connection Object equivalent to the PLP Global Property Hash Table:
-    Stores:
-      1. API Endpoint
-      2. Authentication Type
-      3. Username
-      4. Session Token
-      5. RIA Token
-      6. API Version
-      7. Additional HTTP Header key-value pairs
-    """
-    connection_name: str
-    server_url: str
-    api_endpoint: str
-    auth_method: str
-    username: Optional[str]
-    session_token: str
-    ria_token: Optional[str] = None
-    api_version: str = "25.1"
-    additional_headers: Dict[str, str] = field(default_factory=dict)
-    raw_connection_hash: Dict[str, Any] = field(default_factory=dict)
-
-    def to_hash_string(self) -> str:
-        """
-        Mimics the PLP contract(';;;', tempConnectionHash) followed by base64 encoding.
-        """
-        payload = json.dumps(self.raw_connection_hash)
-        return base64.b64encode(payload.encode("utf-8")).decode("utf-8")
-
-
 def notebook_connection(
     connection_name: str = "NotebookConnection",
-    server_url: Optional[str] = None,
+    server_url: str = "https://notebook.unilever.com",
     authentication_method: str = "Use Notebook Session Token",
     username: Optional[str] = None,
     password: Optional[str] = None,
     session_token: Optional[str] = None,
-    header_1_name: Optional[str] = None,
-    header_1_value: Optional[str] = None,
-    header_2_name: Optional[str] = None,
-    header_2_value: Optional[str] = None,
-    header_3_name: Optional[str] = None,
-    header_3_value: Optional[str] = None,
-    mock_mode: bool = True
+    timeout: int = 30,
 ) -> NotebookConnectionObject:
     """
-    Functional component replicating Pipeline Pilot's 'Notebook Connection'.
+    Create a Notebook connection object.
 
-    Supported Authentication Methods (per PLP XML spec):
-      - 'Use Notebook Session Token': Uses provided session token directly.
-      - 'Use Username and Password Parameters': Performs LoginService REST call to retrieve token.
-      - 'Use Pipeline Pilot Credentials': Windows integrated auth / SSO credential mapping.
-      - 'Use Pipeline Pilot Session Token': Uses pipeline pilot bearer session token.
+    Authentication options:
+        Use Notebook Session Token
+        Use Username and Password Parameters
     """
-    s_url = (server_url or os.getenv("BIOVIA_NOTEBOOK_URL", "https://notebook.corp.internal/eln")).rstrip("/")
-    auth_method = authentication_method or "Use Notebook Session Token"
-    user = username or os.getenv("BIOVIA_USERNAME", "arun.khuntia")
-    token = session_token or os.getenv("BIOVIA_SESSION_TOKEN")
 
+    server_url = server_url.rstrip("/")
+    api_endpoint = f"{server_url}/api/v1"
+
+    token = session_token
     headers: Dict[str, str] = {}
-    if header_1_name and header_1_value:
-        headers[header_1_name] = header_1_value
-    if header_2_name and header_2_value:
-        headers[header_2_name] = header_2_value
-    if header_3_name and header_3_value:
-        headers[header_3_name] = header_3_value
 
-    api_endpoint = f"{s_url}/api/v1"
+    #
+    # Option 1 - Existing Notebook Session Token
+    #
+    if (
+        authentication_method
+        == "Use Notebook Session Token"
+    ):
 
-    # Handle authentication
-    if auth_method == "Use Username and Password Parameters":
-        pwd = password or os.getenv("BIOVIA_PASSWORD", "")
-        if mock_mode:
-            token = f"tok_eln_mock_{abs(hash(user + pwd)) % 999999}"
-        else:
-            login_url = f"{s_url}/notebookloginservice/rpc/notebookloginservice.svc/Login"
-            login_payload = json.dumps({"UserName": user, "Password": pwd}).encode("utf-8")
-            req = urllib.request.Request(
-                login_url,
-                data=login_payload,
-                headers={"Content-Type": "application/json", **headers}
+        if not token:
+            raise ValueError(
+                "Session token must be supplied "
+                "when using "
+                "'Use Notebook Session Token'."
             )
-            try:
-                with urllib.request.urlopen(req, timeout=30) as resp:
-                    res_data = json.loads(resp.read().decode("utf-8"))
-                    token = res_data.get("ElnSessionKey") or res_data.get("Token") or f"tok_{abs(hash(user)) % 10000}"
-            except Exception as ex:
-                logger.warning(f"Notebook login failed: {ex}; generating simulated token for test flow.")
-                token = f"tok_eln_sim_{abs(hash(user)) % 99999}"
 
-    elif auth_method == "Use Notebook Session Token":
+    #
+    # Option 2 - Username/Password Login
+    #
+    elif (
+        authentication_method
+        == "Use Username and Password Parameters"
+    ):
+
+        if not username:
+            raise ValueError(
+                "Username is required."
+            )
+
+        if not password:
+            raise ValueError(
+                "Password is required."
+            )
+
+        login_url = (
+            f"{server_url}/NotebookLoginService/"
+            "rpc/notebookloginservice.svc/Login"
+        )
+
+        payload = {
+            "username": username,
+            "password": password,
+        }
+
+        session = requests.Session()
+
+        response = session.post(
+            login_url,
+            json=payload,
+            timeout=timeout,
+            verify=True,
+        )
+
+        response.raise_for_status()
+
+        data = json.loads(
+            response.content.decode("utf-8-sig")
+        )
+
+        #
+        # Expected BIOVIA response:
+        # {
+        #   "Content": {
+        #       "Token": "xxxxx"
+        #   }
+        # }
+        #
+        token = (
+            data.get("Content", {})
+                .get("Token")
+        )
+
         if not token:
-            token = os.getenv("BIOVIA_SESSION_TOKEN", f"session_token_{abs(hash(user)) % 99999}")
+            raise RuntimeError(
+                f"Token not found in "
+                f"Notebook response: {data}"
+            )
 
-    elif auth_method in ("Use Pipeline Pilot Credentials", "Use Pipeline Pilot Session Token"):
-        if not token:
-            token = f"pp_session_{abs(hash(user)) % 99999}"
+        cookies = {
+            cookie.name: cookie.value
+            for cookie in session.cookies
+        }
 
-    # Build the internal PLP connection hash structure
-    conn_hash: Dict[str, Any] = {
+        if "AuthorizationEln" in cookies:
+            headers["AuthorizationEln"] = (
+                cookies["AuthorizationEln"]
+            )
+
+    else:
+        raise ValueError(
+            f"Unsupported authentication method: "
+            f"{authentication_method}"
+        )
+
+    conn_hash = {
         "API Endpoint": api_endpoint,
-        "Authentication Method": auth_method,
-        "Username": user,
+        "Authentication Method":
+            "Use Notebook Session Token",
+        "Username": username,
         "Session Token": token,
         "RIA Token": f"ria_{token}",
         "API Version": "25.1",
+        **headers,
     }
-    for k, v in headers.items():
-        conn_hash[k] = v
 
-    conn_obj = NotebookConnectionObject(
+    connection_object = NotebookConnectionObject(
         connection_name=connection_name,
-        server_url=s_url,
+        server_url=server_url,
         api_endpoint=api_endpoint,
-        auth_method=auth_method,
-        username=user,
-        session_token=token or "default_token",
+        auth_method="Use Notebook Session Token",
+        username=username,
+        session_token=token,
         ria_token=f"ria_{token}",
         api_version="25.1",
         additional_headers=headers,
-        raw_connection_hash=conn_hash
+        raw_connection_hash=conn_hash,
+        session=session
     )
 
-    logger.info(f"Notebook Connection '{connection_name}' established to {s_url} ({auth_method})")
-    return conn_obj
+    logger.info(
+        "Notebook Connection established: %s",
+        server_url,
+    )
+
+    return connection_object
+
+
+# if __name__ == "__main__":
+
+#     #
+#     # Example 1 - Existing Session Token
+#     #
+
+#     conn = notebook_connection(
+#         connection_name="NotebookConnection",
+#         server_url="https://notebook.unilever.com",
+#         authentication_method=
+#             "Use Notebook Session Token",
+#         username="arun.khuntia",
+#         session_token="your_session_token_here",
+#     )
+
+#     print(conn)
+#     print(conn.session_token)
+#     print(conn.additional_headers)
+#     print(conn.to_hash_string())
+
+    
+    #Example 2 - Login with username/password
+    
+# conn = notebook_connection(
+#     server_url="https://notebook.unilever.com",
+#     authentication_method=
+#         "Use Username and Password Parameters",
+#     username="arun.khuntia",
+#     password="Pogoanaisha321!",
+# )
+# print(conn)
+# print(conn.session_token)
+# print(conn.additional_headers)
+# print(conn.to_hash_string())
+# print(conn.session.cookies.get_dict())
+# print(conn.session.cookies)
+# for c in conn.session.cookies:
+#     print(c.name, "=", c.value)
+# resp = conn.session.get(
+#     "https://notebook.unilever.com/api/v1/experiments/EXP-26-BP7567?$format=json&$expand=simplesections"
+# )
+
+# print(resp.status_code)
+# print(resp.text)
